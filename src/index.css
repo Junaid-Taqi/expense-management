@@ -218,13 +218,14 @@ body {
   border-bottom: 2px solid var(--border-color);
   font-weight: 600;
   text-transform: uppercase;
-  font-size: 0.8rem;
+  font-size: 1rem;
   letter-spacing: 0.5px;
   color: var(--text-muted);
 }
 .table td {
   border-bottom: 1px solid var(--border-color);
   padding: 1rem 0.5rem;
+  font-size: 0.9rem;
 }
 
 /* Gradient text utility */

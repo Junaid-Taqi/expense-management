@@ -223,53 +223,55 @@ const Dashboard = () => {
 
   const pieChartOptions = {
     chart: {
-      type: 'pie',
-      backgroundColor: 'transparent',
+      type: "pie",
+      backgroundColor: "transparent",
       height: 300,
       style: {
-        fontFamily: 'Inter, sans-serif'
-      }
+        fontFamily: "Inter, sans-serif",
+      },
     },
     title: {
-      text: null
+      text: null,
     },
     tooltip: {
-      pointFormat: '{series.name}: <b>{point.y} ({point.percentage:.1f}%)</b>',
-      valuePrefix: currencySymbol
+      pointFormat: "{series.name}: <b>{point.y} ({point.percentage:.1f}%)</b>",
+      valuePrefix: currencySymbol,
     },
     accessibility: {
       point: {
-        valueSuffix: '%'
-      }
+        valueSuffix: "%",
+      },
     },
     plotOptions: {
       pie: {
         allowPointSelect: true,
-        cursor: 'pointer',
+        cursor: "pointer",
         dataLabels: {
-          enabled: false
+          enabled: false,
         },
         showInLegend: true,
-        innerSize: '60%', // for donut effect
-        colors: COLORS
-      }
+        innerSize: "60%", // for donut effect
+        colors: COLORS,
+      },
     },
     legend: {
       itemStyle: {
-        fontSize: '11px',
-        fontWeight: 'normal',
-        color: '#666'
-      }
+        fontSize: "11px",
+        fontWeight: "normal",
+        color: "#666",
+      },
     },
     credits: { enabled: false },
-    series: [{
-      name: 'Expenses',
-      colorByPoint: true,
-      data: categoryData.map(item => ({
-        name: item.name,
-        y: item.value
-      }))
-    }]
+    series: [
+      {
+        name: "Expenses",
+        colorByPoint: true,
+        data: categoryData.map((item) => ({
+          name: item.name,
+          y: item.value,
+        })),
+      },
+    ],
   };
 
   const handleBudgetSave = () => {
@@ -283,7 +285,7 @@ const Dashboard = () => {
 
   return (
     <div className="container-fluid py-2">
-      <h2 className="mb-4 fw-bold text-gradient">Enterprise Dashboard</h2>
+      <h3 className="mb-4 text-gradient">Enterprise Dashboard</h3>
 
       <div className="row mb-4 g-4">
         {/* Total Balance Card */}
@@ -299,12 +301,12 @@ const Dashboard = () => {
               >
                 Net Balance
               </p>
-              <h4
-                className={`m-0 fw-bold ${balance < 0 ? "text-danger" : "text-success"}`}
+              <h5
+                className={`m-0 ${balance < 0 ? "text-danger" : "text-success"}`}
               >
                 {balance < 0 ? "-" : ""}
                 {formatCurrency(Math.abs(balance), currencySymbol)}
-              </h4>
+              </h5>
             </div>
           </div>
         </div>
@@ -322,9 +324,9 @@ const Dashboard = () => {
               >
                 Total Income
               </p>
-              <h4 className="m-0 fw-bold">
+              <h5 className="m-0">
                 {formatCurrency(totalIncomes, currencySymbol)}
-              </h4>
+              </h5>
             </div>
           </div>
         </div>
@@ -342,9 +344,9 @@ const Dashboard = () => {
               >
                 Total Expenses
               </p>
-              <h4 className="m-0 fw-bold">
+              <h5 className="m-0">
                 {formatCurrency(totalExpenses, currencySymbol)}
-              </h4>
+              </h5>
             </div>
           </div>
         </div>
@@ -431,7 +433,7 @@ const Dashboard = () => {
       <div className="row g-4">
         <div className="col-lg-8">
           <div className="table-container h-100">
-            <h5 className="fw-bold mb-4">Recent Activity</h5>
+            <h5 className="mb-4">Recent Activity</h5>
             {allTransactions.length === 0 ? (
               <p className="text-muted">No activity found.</p>
             ) : (
@@ -469,7 +471,7 @@ const Dashboard = () => {
                           {new Date(item.date).toLocaleDateString()}
                         </td>
                         <td
-                          className={`fw-bold ${item.type === "income" ? "text-success" : "text-danger"}`}
+                          className={`fw-semibold ${item.type === "income" ? "text-success" : "text-danger"}`}
                         >
                           {item.type === "income" ? "+" : "-"}
                           {formatCurrency(item.amount, currencySymbol)}
@@ -535,11 +537,11 @@ const Dashboard = () => {
 
         <div className="col-lg-4">
           <div className="table-container h-100">
-            <h5 className="fw-bold mb-4">Expenses by Category</h5>
+            <h5 className="mb-4">Expenses by Category</h5>
             {categoryData.length > 0 ? (
-              <HighchartsReact 
-                highcharts={Highcharts} 
-                options={pieChartOptions} 
+              <HighchartsReact
+                highcharts={Highcharts}
+                options={pieChartOptions}
               />
             ) : (
               <div className="d-flex align-items-center justify-content-center h-100 text-muted">
