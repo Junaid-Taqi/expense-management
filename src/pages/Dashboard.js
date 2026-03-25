@@ -162,7 +162,7 @@ const Dashboard = () => {
       type: "areaspline",
       backgroundColor: "transparent",
       style: {
-        fontFamily: "Inter, sans-serif",
+        fontFamily: "Open Sans, sans-serif",
       },
     },
     title: {
@@ -196,6 +196,12 @@ const Dashboard = () => {
       borderColor: "#eee",
     },
     credits: { enabled: false },
+    legend: {
+      itemStyle: {
+        fontFamily: "'Open Sans', sans-serif",
+        color: "#6c757d",
+      },
+    },
     plotOptions: {
       areaspline: {
         fillOpacity: 0.1,
@@ -227,7 +233,7 @@ const Dashboard = () => {
       backgroundColor: "transparent",
       height: 300,
       style: {
-        fontFamily: "Inter, sans-serif",
+        fontFamily: "Open Sans, sans-serif",
       },
     },
     title: {
@@ -258,6 +264,7 @@ const Dashboard = () => {
       itemStyle: {
         fontSize: "11px",
         fontWeight: "normal",
+        fontFamily: "'Open Sans', sans-serif",
         color: "#666",
       },
     },

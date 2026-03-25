@@ -79,7 +79,7 @@ const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
             }
             onClick={handleLinkClick}
           >
-            <MdAddBox className="text-danger" />
+            <MdAddBox className="" />
             <span className="link-text">Add Expense</span>
           </NavLink>
 
@@ -92,7 +92,7 @@ const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
             }
             onClick={handleLinkClick}
           >
-            <MdOutlineSavings className="text-success" />
+            <MdOutlineSavings className="" />
             <span className="link-text">All Incomes</span>
           </NavLink>
 
@@ -103,7 +103,7 @@ const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
             }
             onClick={handleLinkClick}
           >
-            <MdOutlineAddBusiness className="text-success" />
+            <MdOutlineAddBusiness className="" />
             <span className="link-text">Add Income</span>
           </NavLink>
 
@@ -116,7 +116,7 @@ const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
             }
             onClick={handleLinkClick}
           >
-            <MdOutlineCategory className="text-primary" />
+            <MdOutlineCategory className="" />
             <span className="link-text">Categories</span>
           </NavLink>
         </nav>

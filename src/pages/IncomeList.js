@@ -50,7 +50,7 @@ const IncomeList = () => {
   return (
     <div className="container-fluid py-2">
       <div className="d-flex justify-content-between align-items-sm-center flex-column flex-sm-row mb-4 gap-3">
-        <h2 className="fw-bold m-0 text-success">All Incomes</h2>
+        <h4 className="mb-0 text-gradient">All Incomes</h4>
 
         <div className="d-flex align-items-center gap-2">
           <label className="fw-semibold text-muted mb-0">

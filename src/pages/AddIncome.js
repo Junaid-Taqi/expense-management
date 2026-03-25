@@ -116,9 +116,9 @@ const AddIncome = () => {
         >
           <MdArrowBack />
         </button>
-        <h2 className="fw-bold m-0 text-success">
+        <h4 className="mb-0 text-gradient">
           {isEditMode ? "Edit Income" : "Add New Income"}
-        </h2>
+        </h4>
       </div>
 
       <div className="row">
