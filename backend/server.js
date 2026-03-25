@@ -9,12 +9,21 @@ const userRoutes = require('./routes/userRoutes');
 const expenseRoutes = require('./routes/expenseRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const incomeRoutes = require('./routes/incomeRoutes');
+const budgetRoutes = require('./routes/budgetRoutes');
+const recurringRoutes = require('./routes/recurringRoutes');
+const { processRecurringTransactions } = require('./controllers/recurringController');
 
 dotenv.config();
 
 const startServer = async () => {
   try {
     await connectDB();
+    
+    // Run recurring transaction processor every hour
+    setInterval(processRecurringTransactions, 60 * 60 * 1000);
+    // Also run once on start
+    processRecurringTransactions();
+
     const app = express();
 
     if (process.env.NODE_ENV === 'development') {
@@ -28,6 +37,8 @@ const startServer = async () => {
     app.use('/api/expenses', expenseRoutes);
     app.use('/api/categories', categoryRoutes);
     app.use('/api/incomes', incomeRoutes);
+    app.use('/api/budgets', budgetRoutes);
+    app.use('/api/recurring', recurringRoutes);
 
     app.get('/', (req, res) => {
       res.send('API is running...');

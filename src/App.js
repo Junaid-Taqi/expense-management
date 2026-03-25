@@ -9,6 +9,9 @@ import AddExpense from './pages/AddExpense';
 import IncomeList from './pages/IncomeList';
 import AddIncome from './pages/AddIncome';
 import ManageCategories from './pages/ManageCategories';
+import ManageBudgets from './pages/ManageBudgets';
+import Profile from './pages/Auth/Profile';
+import ManageRecurring from './pages/ManageRecurring';
 
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import Login from './pages/Auth/Login';
@@ -40,6 +43,9 @@ function App() {
                   <Route path="/add-income" element={<AddIncome />} />
                   <Route path="/edit-income/:id" element={<AddIncome />} />
                   <Route path="/categories" element={<ManageCategories />} />
+                  <Route path="/budgets" element={<ManageBudgets />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/recurring" element={<ManageRecurring />} />
                 </Routes>
               </MainLayout>
             </ProtectedRoute>

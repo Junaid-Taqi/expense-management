@@ -7,6 +7,7 @@ import budgetReducer from './slices/budgetSlice';
 import categoryReducer from './slices/categorySlice';
 import filterReducer from './slices/filterSlice';
 import authReducer from './slices/authSlice';
+import recurringReducer from './slices/recurringSlice';
 
 const store = configureStore({
   reducer: {
@@ -15,9 +16,10 @@ const store = configureStore({
     theme: themeReducer,
     currency: currencyReducer,
     incomes: incomeReducer,
-    budget: budgetReducer,
+    budgets: budgetReducer,
     categories: categoryReducer,
     filters: filterReducer,
+    recurring: recurringReducer,
   },
 });
 

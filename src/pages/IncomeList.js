@@ -1,24 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  selectAllIncomes,
   deleteIncome,
   fetchIncomes,
 } from "../store/slices/incomeSlice";
-import { selectCurrencySymbol } from "../store/slices/currencySlice";
 import {
   selectMonthFilter,
   selectYearFilter,
 } from "../store/slices/filterSlice";
 import { Link } from "react-router-dom";
-import { MdDelete, MdEdit } from "react-icons/md";
-import { formatCurrency } from "../utils/formatCurrency";
+import { MdDelete, MdEdit, MdDownload } from "react-icons/md";
+import ConvertedAmount from "../components/Common/ConvertedAmount";
 
 const IncomeList = () => {
-  const { items: incomes, error: apiError } = useSelector(
+  const { items: incomes } = useSelector(
     (state) => state.incomes,
   );
-  const currencySymbol = useSelector(selectCurrencySymbol);
   const monthFilter = useSelector(selectMonthFilter);
   const yearFilter = useSelector(selectYearFilter);
   const dispatch = useDispatch();
@@ -47,27 +44,58 @@ const IncomeList = () => {
     }
   };
 
+  const handleExportCSV = () => {
+    const headers = ["Title", "Source", "Date", "Amount"];
+    const csvData = filteredIncomes.map(inc => [
+      `"${inc.title.replace(/"/g, '""')}"`,
+      `"${inc.source}"`,
+      new Date(inc.date).toLocaleDateString(),
+      inc.amount
+    ]);
+
+    const csvContent = [headers, ...csvData].map(e => e.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `incomes_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="container-fluid py-2">
       <div className="d-flex justify-content-between align-items-sm-center flex-column flex-sm-row mb-4 gap-3">
         <h4 className="mb-0 text-gradient">All Incomes</h4>
 
-        <div className="d-flex align-items-center gap-2">
-          <label className="fw-semibold text-muted mb-0">
-            Filter by source:
-          </label>
-          <select
-            className="form-select form-select-sm"
-            style={{ width: "auto" }}
-            value={filterSource}
-            onChange={(e) => setFilterSource(e.target.value)}
+        <div className="d-flex align-items-center gap-3">
+          <button 
+            className="btn btn-sm btn-outline-success d-flex align-items-center"
+            onClick={handleExportCSV}
+            disabled={filteredIncomes.length === 0}
           >
-            {sources.map((src, i) => (
-              <option key={i} value={src}>
-                {src}
-              </option>
-            ))}
-          </select>
+            <MdDownload className="me-1" /> Export CSV
+          </button>
+
+          <div className="d-flex align-items-center gap-2">
+            <label className="fw-semibold text-muted mb-0 small">
+              Source:
+            </label>
+            <select
+              className="form-select form-select-sm"
+              style={{ width: "auto" }}
+              value={filterSource}
+              onChange={(e) => setFilterSource(e.target.value)}
+            >
+              {sources.map((src, i) => (
+                <option key={i} value={src}>
+                  {src}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
@@ -106,7 +134,7 @@ const IncomeList = () => {
                         {new Date(inc.date).toLocaleDateString()}
                       </td>
                       <td className="fw-bold fs-6 text-success">
-                        +{formatCurrency(inc.amount, currencySymbol)}
+                        +<ConvertedAmount amount={inc.amount} />
                       </td>
                       <td className="text-end">
                         <Link

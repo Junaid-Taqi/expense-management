@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import FloatingActionButton from './FloatingActionButton';
 
 const MainLayout = ({ children }) => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -16,6 +17,7 @@ const MainLayout = ({ children }) => {
           {children}
         </div>
       </main>
+      <FloatingActionButton />
     </div>
   );
 };

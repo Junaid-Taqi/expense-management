@@ -12,6 +12,9 @@ import {
   MdOutlineCategory,
   MdOutlineSavings,
   MdOutlineAddBusiness,
+  MdOutlineAccountBalanceWallet,
+  MdPerson,
+  MdEventRepeat,
 } from "react-icons/md";
 
 const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
@@ -127,6 +130,39 @@ const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           >
             <MdOutlineCategory className="" />
             <span className="link-text">Categories</span>
+          </NavLink>
+
+          <NavLink
+            to="/budgets"
+            className={({ isActive }) =>
+              `nav-link text-decoration-none ${isActive ? "active" : ""}`
+            }
+            onClick={handleLinkClick}
+          >
+            <MdOutlineAccountBalanceWallet className="" />
+            <span className="link-text">Budgets</span>
+          </NavLink>
+
+          <NavLink
+            to="/recurring"
+            className={({ isActive }) =>
+              `nav-link text-decoration-none ${isActive ? "active" : ""}`
+            }
+            onClick={handleLinkClick}
+          >
+            <MdEventRepeat className="" />
+            <span className="link-text">Recurring</span>
+          </NavLink>
+
+          <NavLink
+            to="/profile"
+            className={({ isActive }) =>
+              `nav-link text-decoration-none ${isActive ? "active" : ""}`
+            }
+            onClick={handleLinkClick}
+          >
+            <MdPerson className="" />
+            <span className="link-text">Profile</span>
           </NavLink>
         </nav>
 

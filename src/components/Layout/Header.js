@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleTheme, selectTheme } from "../../store/slices/themeSlice";
 import {
   setCurrency,
   selectCurrencyCode,
+  fetchRates,
 } from "../../store/slices/currencySlice";
 import {
   setMonthFilter,
@@ -55,6 +56,10 @@ const Header = ({ setIsMobileOpen }) => {
   const expensesList = useSelector(selectAllExpenses);
   const incomesList = useSelector(selectAllIncomes);
   const { userInfo } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    dispatch(fetchRates(currencyCode));
+  }, [dispatch, currencyCode]);
 
   const logoutHandler = () => {
     dispatch(logout());

@@ -5,7 +5,6 @@ import {
   deleteExpense,
   fetchExpenses,
 } from "../store/slices/expenseSlice";
-import { selectCurrencySymbol } from "../store/slices/currencySlice";
 import {
   selectCategories,
   fetchCategories,
@@ -15,12 +14,11 @@ import {
   selectYearFilter,
 } from "../store/slices/filterSlice";
 import { Link } from "react-router-dom";
-import { MdDelete, MdEdit } from "react-icons/md";
-import { formatCurrency } from "../utils/formatCurrency";
+import { MdDelete, MdEdit, MdDownload } from "react-icons/md";
+import ConvertedAmount from "../components/Common/ConvertedAmount";
 
 const ExpensesList = () => {
   const expenses = useSelector(selectAllExpenses);
-  const currencySymbol = useSelector(selectCurrencySymbol);
   const dynamicCategories = useSelector(selectCategories);
   const monthFilter = useSelector(selectMonthFilter);
   const yearFilter = useSelector(selectYearFilter);
@@ -52,27 +50,58 @@ const ExpensesList = () => {
     }
   };
 
+  const handleExportCSV = () => {
+    const headers = ["Title", "Category", "Date", "Amount"];
+    const csvData = filteredExpenses.map(exp => [
+      `"${exp.title.replace(/"/g, '""')}"`,
+      `"${exp.category}"`,
+      new Date(exp.date).toLocaleDateString(),
+      exp.amount
+    ]);
+
+    const csvContent = [headers, ...csvData].map(e => e.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `expenses_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="container-fluid py-2">
       <div className="d-flex justify-content-between align-items-sm-center flex-column flex-sm-row mb-4 gap-3">
         <h4 className="mb-2 text-gradient">All Expenses</h4>
 
-        <div className="d-flex align-items-center gap-2">
-          <label className="fw-semibold text-muted mb-0">
-            Filter by category:
-          </label>
-          <select
-            className="form-select form-select-sm"
-            style={{ width: "auto" }}
-            value={filterCategory}
-            onChange={(e) => setFilterCategory(e.target.value)}
+        <div className="d-flex align-items-center gap-3">
+          <button 
+            className="btn btn-sm btn-outline-primary d-flex align-items-center"
+            onClick={handleExportCSV}
+            disabled={filteredExpenses.length === 0}
           >
-            {categories.map((cat, i) => (
-              <option key={i} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
+            <MdDownload className="me-1" /> Export CSV
+          </button>
+          
+          <div className="d-flex align-items-center gap-2">
+            <label className="fw-semibold text-muted mb-0 small">
+              Category:
+            </label>
+            <select
+              className="form-select form-select-sm"
+              style={{ width: "auto" }}
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+            >
+              {categories.map((cat, i) => (
+                <option key={i} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
@@ -111,7 +140,7 @@ const ExpensesList = () => {
                         {new Date(exp.date).toLocaleDateString()}
                       </td>
                       <td className="fw-bold fs-6">
-                        {formatCurrency(exp.amount, currencySymbol)}
+                        <ConvertedAmount amount={exp.amount} />
                       </td>
                       <td className="text-end">
                         <Link
