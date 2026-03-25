@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { selectAllExpenses } from "../store/slices/expenseSlice";
-import { selectAllIncomes } from "../store/slices/incomeSlice";
+import { selectAllExpenses, fetchExpenses } from "../store/slices/expenseSlice";
+import { selectAllIncomes, fetchIncomes } from "../store/slices/incomeSlice";
 import { selectBudgetLimit, setBudgetLimit } from "../store/slices/budgetSlice";
 import {
   selectMonthFilter,
@@ -49,6 +49,11 @@ const Dashboard = () => {
   const [tempBudget, setTempBudget] = useState(budgetLimit);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+
+  useEffect(() => {
+    dispatch(fetchExpenses());
+    dispatch(fetchIncomes());
+  }, [dispatch]);
 
   // Apply filters to data
   const expenses = rawExpenses.filter((exp) => {
@@ -292,7 +297,7 @@ const Dashboard = () => {
                   </thead>
                   <tbody>
                     {currentTransactions.map((item) => (
-                      <tr key={item.id}>
+                      <tr key={item._id || item.id}>
                         <td
                           className="fw-semibold text-truncate text-main"
                           style={{ maxWidth: "200px" }}

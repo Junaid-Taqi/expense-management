@@ -1,40 +1,108 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { v4 as uuidv4 } from 'uuid';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import api from '../../utils/api';
 
-const initialState = {
-  items: [
-    // pre-fill with dummy data
-    { id: uuidv4(), title: 'Monthly Salary', amount: 4500.00, source: 'Salary', date: new Date().toISOString() },
-    { id: uuidv4(), title: 'Freelance Design', amount: 800.00, source: 'Business', date: new Date().toISOString() },
-  ],
-};
+export const fetchIncomes = createAsyncThunk(
+  'incomes/fetchAll',
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await api.get('/incomes');
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+export const addIncome = createAsyncThunk(
+  'incomes/add',
+  async (incomeData, { rejectWithValue }) => {
+    try {
+      const { data } = await api.post('/incomes', incomeData);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+export const updateIncome = createAsyncThunk(
+  'incomes/update',
+  async (incomeData, { rejectWithValue }) => {
+    try {
+      const { id, ...rest } = incomeData;
+      const { data } = await api.put(`/incomes/${id}`, rest);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+export const deleteIncome = createAsyncThunk(
+  'incomes/delete',
+  async (id, { rejectWithValue }) => {
+    try {
+      await api.delete(`/incomes/${id}`);
+      return id;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
 
 const incomeSlice = createSlice({
   name: 'incomes',
-  initialState,
-  reducers: {
-    addIncome: (state, action) => {
-      state.items.push({
-        ...action.payload,
-        id: uuidv4(),
+  initialState: {
+    items: [],
+    loading: false,
+    error: null,
+  },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchIncomes.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchIncomes.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = action.payload;
+      })
+      .addCase(fetchIncomes.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(addIncome.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items.push(action.payload);
+      })
+      .addCase(addIncome.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(updateIncome.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.items.findIndex((item) => item._id === action.payload._id);
+        if (index !== -1) {
+          state.items[index] = action.payload;
+        }
+      })
+      .addCase(updateIncome.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteIncome.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = state.items.filter((item) => item._id !== action.payload);
+      })
+      .addCase(deleteIncome.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
-    },
-    deleteIncome: (state, action) => {
-      state.items = state.items.filter(income => income.id !== action.payload);
-    },
-    updateIncome: (state, action) => {
-      const index = state.items.findIndex(income => income.id === action.payload.id);
-      if (index !== -1) {
-        state.items[index] = action.payload;
-      }
-    },
   },
 });
 
-export const { addIncome, deleteIncome, updateIncome } = incomeSlice.actions;
-
 export const selectAllIncomes = (state) => state.incomes.items;
-export const selectTotalIncomes = (state) => 
+export const selectTotalIncomes = (state) =>
   state.incomes.items.reduce((total, item) => total + parseFloat(item.amount), 0);
 
 export default incomeSlice.reducer;

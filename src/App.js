@@ -10,6 +10,10 @@ import IncomeList from './pages/IncomeList';
 import AddIncome from './pages/AddIncome';
 import ManageCategories from './pages/ManageCategories';
 
+import ProtectedRoute from './components/Auth/ProtectedRoute';
+import Login from './pages/Auth/Login';
+import Signup from './pages/Auth/Signup';
+
 function App() {
   const theme = useSelector(selectTheme);
 
@@ -18,18 +22,30 @@ function App() {
   }, [theme]);
   return (
     <Router>
-      <MainLayout>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/expenses" element={<ExpensesList />} />
-          <Route path="/add-expense" element={<AddExpense />} />
-          <Route path="/edit-expense/:id" element={<AddExpense />} />
-          <Route path="/incomes" element={<IncomeList />} />
-          <Route path="/add-income" element={<AddIncome />} />
-          <Route path="/edit-income/:id" element={<AddIncome />} />
-          <Route path="/categories" element={<ManageCategories />} />
-        </Routes>
-      </MainLayout>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        
+        <Route 
+          path="/*" 
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <Routes>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/expenses" element={<ExpensesList />} />
+                  <Route path="/add-expense" element={<AddExpense />} />
+                  <Route path="/edit-expense/:id" element={<AddExpense />} />
+                  <Route path="/incomes" element={<IncomeList />} />
+                  <Route path="/add-income" element={<AddIncome />} />
+                  <Route path="/edit-income/:id" element={<AddIncome />} />
+                  <Route path="/categories" element={<ManageCategories />} />
+                </Routes>
+              </MainLayout>
+            </ProtectedRoute>
+          } 
+        />
+      </Routes>
     </Router>
   );
 }

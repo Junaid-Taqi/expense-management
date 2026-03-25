@@ -1,33 +1,78 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import api from '../../utils/api';
 
-const initialState = {
-  // Pre-load with the default enterprise categories
-  items: JSON.parse(localStorage.getItem('expense_categories')) || [
-    'Rent', 'Utilities', 'Groceries', 'Insurance', 'Healthcare', 
-    'Savings', 'Debt Management', 'Subscriptions', 'Education', 
-    'Entertainment', 'Transportation', 'Personal Care', 'Other'
-  ],
-};
+export const fetchCategories = createAsyncThunk(
+  'categories/fetchAll',
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await api.get('/categories');
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+export const addCategory = createAsyncThunk(
+  'categories/add',
+  async (categoryData, { rejectWithValue }) => {
+    try {
+      const { data } = await api.post('/categories', categoryData);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+export const deleteCategory = createAsyncThunk(
+  'categories/delete',
+  async (id, { rejectWithValue }) => {
+    try {
+      await api.delete(`/categories/${id}`);
+      return id;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
 
 const categorySlice = createSlice({
   name: 'categories',
-  initialState,
-  reducers: {
-    addCategory: (state, action) => {
-      const newCategory = action.payload.trim();
-      if (newCategory && !state.items.includes(newCategory)) {
-        state.items.push(newCategory);
-        localStorage.setItem('expense_categories', JSON.stringify(state.items));
-      }
-    },
-    removeCategory: (state, action) => {
-      state.items = state.items.filter(cat => cat !== action.payload);
-      localStorage.setItem('expense_categories', JSON.stringify(state.items));
-    }
+  initialState: {
+    items: [],
+    loading: false,
+    error: null,
+  },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchCategories.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchCategories.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = action.payload;
+      })
+      .addCase(fetchCategories.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(addCategory.fulfilled, (state, action) => {
+        state.items.push(action.payload);
+      })
+      .addCase(addCategory.rejected, (state, action) => {
+        state.error = action.payload;
+      })
+      .addCase(deleteCategory.fulfilled, (state, action) => {
+        state.items = state.items.filter((item) => item._id !== action.payload);
+      })
+      .addCase(deleteCategory.rejected, (state, action) => {
+        state.error = action.payload;
+      });
   },
 });
 
-export const { addCategory, removeCategory } = categorySlice.actions;
 export const selectCategories = (state) => state.categories.items;
 
 export default categorySlice.reducer;

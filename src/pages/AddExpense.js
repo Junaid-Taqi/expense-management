@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addExpense, updateExpense, selectAllExpenses } from '../store/slices/expenseSlice';
+import { addExpense, updateExpense, selectAllExpenses, fetchExpenses } from '../store/slices/expenseSlice';
 import { selectCurrencySymbol } from '../store/slices/currencySlice';
-import { selectCategories } from '../store/slices/categorySlice';
+import { selectCategories, fetchCategories } from '../store/slices/categorySlice';
 import { useNavigate, useParams } from 'react-router-dom';
 import { MdSave, MdArrowBack } from 'react-icons/md';
 
@@ -10,9 +10,14 @@ const AddExpense = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams(); // URL parama to check if edit mode
-  const allExpenses = useSelector(selectAllExpenses);
+  const { items: allExpenses, error: apiError } = useSelector(state => state.expenses);
   const currencySymbol = useSelector(selectCurrencySymbol);
   const dynamicCategories = useSelector(selectCategories);
+
+  useEffect(() => {
+    dispatch(fetchExpenses());
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
   const isEditMode = Boolean(id);
 
@@ -27,7 +32,7 @@ const AddExpense = () => {
 
   useEffect(() => {
     if (isEditMode) {
-      const expenseToEdit = allExpenses.find(exp => exp.id === id);
+      const expenseToEdit = allExpenses.find(exp => exp._id === id);
       if (expenseToEdit) {
         setFormData({
           title: expenseToEdit.title,
@@ -92,6 +97,8 @@ const AddExpense = () => {
         <h2 className="fw-bold m-0">{isEditMode ? 'Edit Expense' : 'Add New Expense'}</h2>
       </div>
 
+      {apiError && <div className="alert alert-danger mb-4">{apiError}</div>}
+
       <div className="row">
         <div className="col-lg-8 col-xl-6">
           <div className="table-container">
@@ -148,7 +155,7 @@ const AddExpense = () => {
                 >
                   <option value="">Select a category</option>
                   {dynamicCategories.map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
+                    <option key={cat._id} value={cat.name}>{cat.name}</option>
                   ))}
                 </select>
                 {errors.category && <div className="invalid-feedback">{errors.category}</div>}

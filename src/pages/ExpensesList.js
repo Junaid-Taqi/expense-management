@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectAllExpenses, deleteExpense } from '../store/slices/expenseSlice';
+import { selectAllExpenses, deleteExpense, fetchExpenses } from '../store/slices/expenseSlice';
 import { selectCurrencySymbol } from '../store/slices/currencySlice';
-import { selectCategories } from '../store/slices/categorySlice';
+import { selectCategories, fetchCategories } from '../store/slices/categorySlice';
 import { selectMonthFilter, selectYearFilter } from '../store/slices/filterSlice';
 import { Link } from 'react-router-dom';
 import { MdDelete, MdEdit } from 'react-icons/md';
@@ -18,8 +18,13 @@ const ExpensesList = () => {
   
   const [filterCategory, setFilterCategory] = useState('All');
 
+  useEffect(() => {
+    dispatch(fetchExpenses());
+    dispatch(fetchCategories());
+  }, [dispatch]);
+
   // Extract unique categories for filter
-  const categories = ['All', ...dynamicCategories];
+  const categories = ['All', ...dynamicCategories.map(c => c.name)];
 
   const filteredExpenses = expenses.filter(exp => {
     const d = new Date(exp.date);
@@ -75,7 +80,7 @@ const ExpensesList = () => {
               </thead>
               <tbody>
                 {[...filteredExpenses].sort((a,b) => new Date(b.date) - new Date(a.date)).map(exp => (
-                  <tr key={exp.id}>
+                  <tr key={exp._id}>
                     <td className="fw-semibold text-main">{exp.title}</td>
                     <td><span className="badge rounded-pill bg-primary bg-opacity-10 text-primary px-3 py-2 border border-primary border-opacity-25">{exp.category}</span></td>
                     <td className="text-muted">{new Date(exp.date).toLocaleDateString()}</td>
@@ -83,12 +88,12 @@ const ExpensesList = () => {
                       {formatCurrency(exp.amount, currencySymbol)}
                     </td>
                     <td className="text-end">
-                      <Link to={`/edit-expense/${exp.id}`} className="btn btn-sm btn-outline-secondary me-2">
+                      <Link to={`/edit-expense/${exp._id}`} className="btn btn-sm btn-outline-secondary me-2">
                         <MdEdit />
                       </Link>
                       <button 
                         className="btn btn-sm btn-outline-danger" 
-                        onClick={() => handleDelete(exp.id)}
+                        onClick={() => handleDelete(exp._id)}
                       >
                         <MdDelete />
                       </button>

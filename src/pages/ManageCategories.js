@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addCategory, removeCategory, selectCategories } from '../store/slices/categorySlice';
-import { selectAllExpenses } from '../store/slices/expenseSlice';
+import { addCategory, deleteCategory, selectCategories, fetchCategories } from '../store/slices/categorySlice';
+import { selectAllExpenses, fetchExpenses } from '../store/slices/expenseSlice';
 import { MdAdd, MdDelete, MdCategory } from 'react-icons/md';
 
 const ManageCategories = () => {
   const dispatch = useDispatch();
-  const categories = useSelector(selectCategories);
+  const { items: categories, error: apiError } = useSelector(state => state.categories);
   const expenses = useSelector(selectAllExpenses);
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+    dispatch(fetchExpenses());
+  }, [dispatch]);
+
   const [newCat, setNewCat] = useState('');
   const [error, setError] = useState('');
 
@@ -16,12 +22,12 @@ const ManageCategories = () => {
     const cleanCat = newCat.trim();
     if (!cleanCat) return;
 
-    if (categories.some(c => c.toLowerCase() === cleanCat.toLowerCase())) {
+    if (categories.some(c => c.name.toLowerCase() === cleanCat.toLowerCase())) {
       setError('Category already exists!');
       return;
     }
 
-    dispatch(addCategory(cleanCat));
+    dispatch(addCategory({ name: cleanCat }));
     setNewCat('');
     setError('');
   };
@@ -40,12 +46,19 @@ const ManageCategories = () => {
       }
     }
     
-    dispatch(removeCategory(category));
+    // Find the category object to get its ID if needed, 
+    // but our slice currently uses name. 
+    // Wait, the backend expects an ID for delete. 
+    // I need to update the category slice to store objects or handle name-based delete on backend.
+    // I'll update the category slice to store objects.
+    dispatch(deleteCategory(category));
   };
 
   return (
     <div className="container-fluid py-2">
       <h2 className="mb-4 fw-bold text-gradient">Manage Categories</h2>
+
+      {apiError && <div className="alert alert-danger mb-4">{apiError}</div>}
 
       <div className="row">
         <div className="col-lg-6">
@@ -78,14 +91,14 @@ const ManageCategories = () => {
             <div className="d-flex flex-wrap gap-2">
               {categories.map((cat, idx) => (
                 <div 
-                  key={idx} 
+                  key={cat._id || idx} 
                   className="badge rounded-pill bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 d-flex align-items-center mb-2"
                   style={{ fontSize: '0.9rem', padding: '0.6rem 1rem' }}
                 >
-                  <span className="me-2">{cat}</span>
+                  <span className="me-2">{cat.name}</span>
                   <button 
                     className="btn btn-sm btn-link text-danger p-0 border-0 ms-1 d-flex align-items-center justify-content-center hover-opacity"
-                    onClick={() => handleDelete(cat)}
+                    onClick={() => handleDelete(cat._id)}
                     title="Delete Category"
                     style={{ textDecoration: 'none' }}
                   >

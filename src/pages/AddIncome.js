@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addIncome, updateIncome, selectAllIncomes } from '../store/slices/incomeSlice';
+import { addIncome, updateIncome, selectAllIncomes, fetchIncomes } from '../store/slices/incomeSlice';
 import { selectCurrencySymbol } from '../store/slices/currencySlice';
 import { useNavigate, useParams } from 'react-router-dom';
 import { MdSave, MdArrowBack } from 'react-icons/md';
@@ -11,6 +11,10 @@ const AddIncome = () => {
   const { id } = useParams();
   const allIncomes = useSelector(selectAllIncomes);
   const currencySymbol = useSelector(selectCurrencySymbol);
+
+  useEffect(() => {
+    dispatch(fetchIncomes());
+  }, [dispatch]);
 
   const isEditMode = Boolean(id);
 
@@ -25,7 +29,7 @@ const AddIncome = () => {
 
   useEffect(() => {
     if (isEditMode) {
-      const incomeToEdit = allIncomes.find(inc => inc.id === id);
+      const incomeToEdit = allIncomes.find(inc => inc._id === id);
       if (incomeToEdit) {
         setFormData({
           title: incomeToEdit.title,

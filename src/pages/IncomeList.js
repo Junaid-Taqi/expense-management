@@ -8,7 +8,7 @@ import { MdDelete, MdEdit } from 'react-icons/md';
 import { formatCurrency } from '../utils/formatCurrency';
 
 const IncomeList = () => {
-  const incomes = useSelector(selectAllIncomes);
+  const { items: incomes, error: apiError } = useSelector(state => state.incomes);
   const currencySymbol = useSelector(selectCurrencySymbol);
   const monthFilter = useSelector(selectMonthFilter);
   const yearFilter = useSelector(selectYearFilter);
@@ -72,7 +72,7 @@ const IncomeList = () => {
               </thead>
               <tbody>
                 {[...filteredIncomes].sort((a,b) => new Date(b.date) - new Date(a.date)).map(inc => (
-                  <tr key={inc.id}>
+                  <tr key={inc._id}>
                     <td className="fw-semibold text-main">{inc.title}</td>
                     <td><span className="badge rounded-pill bg-success bg-opacity-10 text-success px-3 py-2 border border-success border-opacity-25">{inc.source}</span></td>
                     <td className="text-muted">{new Date(inc.date).toLocaleDateString()}</td>
@@ -80,12 +80,12 @@ const IncomeList = () => {
                       +{formatCurrency(inc.amount, currencySymbol)}
                     </td>
                     <td className="text-end">
-                      <Link to={`/edit-income/${inc.id}`} className="btn btn-sm btn-outline-secondary me-2">
+                      <Link to={`/edit-income/${inc._id}`} className="btn btn-sm btn-outline-secondary me-2">
                         <MdEdit />
                       </Link>
                       <button 
                         className="btn btn-sm btn-outline-danger" 
-                        onClick={() => handleDelete(inc.id)}
+                        onClick={() => handleDelete(inc._id)}
                       >
                         <MdDelete />
                       </button>

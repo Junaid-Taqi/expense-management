@@ -6,9 +6,11 @@ import incomeReducer from './slices/incomeSlice';
 import budgetReducer from './slices/budgetSlice';
 import categoryReducer from './slices/categorySlice';
 import filterReducer from './slices/filterSlice';
+import authReducer from './slices/authSlice';
 
 const store = configureStore({
   reducer: {
+    auth: authReducer,
     expenses: expenseReducer,
     theme: themeReducer,
     currency: currencyReducer,

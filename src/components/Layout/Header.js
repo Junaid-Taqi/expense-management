@@ -6,7 +6,8 @@ import { setMonthFilter, setYearFilter, selectMonthFilter, selectYearFilter } fr
 import { selectAllExpenses } from '../../store/slices/expenseSlice';
 import { selectAllIncomes } from '../../store/slices/incomeSlice';
 import { exportToCSV } from '../../utils/exportCsv';
-import { MdDarkMode, MdLightMode, MdDownload, MdMenu } from 'react-icons/md';
+import { MdDarkMode, MdLightMode, MdDownload, MdMenu, MdLogout } from 'react-icons/md';
+import { logout } from '../../store/slices/authSlice';
 
 const currencies = [
   { code: 'USD', symbol: '$' },
@@ -29,6 +30,11 @@ const Header = ({ setIsMobileOpen }) => {
   const yearFilter = useSelector(selectYearFilter);
   const expensesList = useSelector(selectAllExpenses);
   const incomesList = useSelector(selectAllIncomes);
+  const { userInfo } = useSelector((state) => state.auth);
+
+  const logoutHandler = () => {
+    dispatch(logout());
+  };
 
   // Generate dynamic years based on current date (e.g., last 5 years + next 2)
   const currentYear = new Date().getFullYear();
@@ -116,6 +122,23 @@ const Header = ({ setIsMobileOpen }) => {
         >
           {theme === 'light' ? <MdDarkMode size={20} /> : <MdLightMode size={20} />}
         </button>
+
+        {/* User Profile & Logout */}
+        {userInfo && (
+          <div className="d-flex align-items-center gap-2 ms-2 ps-3 border-start" style={{ borderColor: 'var(--border-color)' }}>
+            <div className="d-none d-lg-block text-end">
+              <div className="fw-bold small" style={{ color: 'var(--text-main)' }}>{userInfo.name}</div>
+              <div className="text-muted smaller" style={{ fontSize: '0.7rem' }}>{userInfo.email}</div>
+            </div>
+            <button 
+              className="btn btn-sm btn-outline-danger d-flex align-items-center"
+              onClick={logoutHandler}
+              title="Logout"
+            >
+              <MdLogout size={18} />
+            </button>
+          </div>
+        )}
 
       </div>
     </header>

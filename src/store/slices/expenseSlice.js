@@ -1,41 +1,108 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { v4 as uuidv4 } from 'uuid';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import api from '../../utils/api';
 
-const initialState = {
-  items: [
-    // pre-fill with some dummy data for visual testing
-    { id: uuidv4(), title: 'Groceries', amount: 120.50, category: 'Food', date: new Date().toISOString() },
-    { id: uuidv4(), title: 'Internet Bill', amount: 60.00, category: 'Utilities', date: new Date().toISOString() },
-    { id: uuidv4(), title: 'Gym Membership', amount: 45.00, category: 'Health', date: new Date().toISOString() },
-  ],
-};
+export const fetchExpenses = createAsyncThunk(
+  'expenses/fetchAll',
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await api.get('/expenses');
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+export const addExpense = createAsyncThunk(
+  'expenses/add',
+  async (expenseData, { rejectWithValue }) => {
+    try {
+      const { data } = await api.post('/expenses', expenseData);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+export const updateExpense = createAsyncThunk(
+  'expenses/update',
+  async (expenseData, { rejectWithValue }) => {
+    try {
+      const { id, ...rest } = expenseData;
+      const { data } = await api.put(`/expenses/${id}`, rest);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+export const deleteExpense = createAsyncThunk(
+  'expenses/delete',
+  async (id, { rejectWithValue }) => {
+    try {
+      await api.delete(`/expenses/${id}`);
+      return id;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
 
 const expenseSlice = createSlice({
   name: 'expenses',
-  initialState,
-  reducers: {
-    addExpense: (state, action) => {
-      state.items.push({
-        ...action.payload,
-        id: uuidv4(),
+  initialState: {
+    items: [],
+    loading: false,
+    error: null,
+  },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchExpenses.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchExpenses.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = action.payload;
+      })
+      .addCase(fetchExpenses.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(addExpense.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items.push(action.payload);
+      })
+      .addCase(addExpense.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(updateExpense.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.items.findIndex((item) => item._id === action.payload._id);
+        if (index !== -1) {
+          state.items[index] = action.payload;
+        }
+      })
+      .addCase(updateExpense.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteExpense.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = state.items.filter((item) => item._id !== action.payload);
+      })
+      .addCase(deleteExpense.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
-    },
-    deleteExpense: (state, action) => {
-      state.items = state.items.filter(expense => expense.id !== action.payload);
-    },
-    updateExpense: (state, action) => {
-      const index = state.items.findIndex(expense => expense.id === action.payload.id);
-      if (index !== -1) {
-        state.items[index] = action.payload;
-      }
-    },
   },
 });
 
-export const { addExpense, deleteExpense, updateExpense } = expenseSlice.actions;
-
 export const selectAllExpenses = (state) => state.expenses.items;
-export const selectTotalExpenses = (state) => 
+export const selectTotalExpenses = (state) =>
   state.expenses.items.reduce((total, item) => total + parseFloat(item.amount), 0);
 
 export default expenseSlice.reducer;
