@@ -42,11 +42,11 @@ const updateExpense = asyncHandler(async (req, res) => {
       throw new Error('Not authorized');
     }
 
-    expense.title = title || expense.title;
-    expense.amount = amount || expense.amount;
-    expense.category = category || expense.category;
-    expense.date = date || expense.date;
-    expense.description = description || expense.description;
+    expense.title = title !== undefined ? title : expense.title;
+    expense.amount = amount !== undefined ? amount : expense.amount;
+    expense.category = category !== undefined ? category : expense.category;
+    expense.date = date !== undefined ? date : expense.date;
+    expense.description = description !== undefined ? description : expense.description;
 
     const updatedExpense = await expense.save();
     res.json(updatedExpense);

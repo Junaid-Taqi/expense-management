@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectAllIncomes, deleteIncome } from '../store/slices/incomeSlice';
+import { selectAllIncomes, deleteIncome, fetchIncomes } from '../store/slices/incomeSlice';
 import { selectCurrencySymbol } from '../store/slices/currencySlice';
 import { selectMonthFilter, selectYearFilter } from '../store/slices/filterSlice';
 import { Link } from 'react-router-dom';
@@ -14,6 +14,10 @@ const IncomeList = () => {
   const yearFilter = useSelector(selectYearFilter);
   const dispatch = useDispatch();
   
+  useEffect(() => {
+    dispatch(fetchIncomes());
+  }, [dispatch]);
+
   const [filterSource, setFilterSource] = useState('All');
 
   const sources = ['All', ...new Set(incomes.map(item => item.source))];

@@ -59,19 +59,15 @@ const AddIncome = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      if (isEditMode) {
-        dispatch(updateIncome({
-          id,
-          ...formData,
-          date: new Date(formData.date).toISOString() 
-        }));
-      } else {
-        dispatch(addIncome({
-          ...formData,
-          date: new Date(formData.date).toISOString()
-        }));
-      }
-      navigate('/incomes');
+      const action = isEditMode 
+        ? updateIncome({ id, ...formData, date: new Date(formData.date).toISOString() })
+        : addIncome({ ...formData, date: new Date(formData.date).toISOString() });
+
+      dispatch(action).unwrap().then(() => {
+        navigate('/incomes');
+      }).catch((err) => {
+        // Error is handled by Redux error state
+      });
     }
   };
 

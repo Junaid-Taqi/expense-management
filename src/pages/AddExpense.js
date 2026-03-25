@@ -62,21 +62,15 @@ const AddExpense = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      if (isEditMode) {
-        dispatch(updateExpense({
-          id,
-          ...formData,
-          // ensure saving full iso string date structure if needed, or keeping it as is 
-          // usually backend receives standard iso, so let's convert back to standard iso or just keep it simple string
-          date: new Date(formData.date).toISOString() 
-        }));
-      } else {
-        dispatch(addExpense({
-          ...formData,
-          date: new Date(formData.date).toISOString()
-        }));
-      }
-      navigate('/expenses');
+      const action = isEditMode 
+        ? updateExpense({ id, ...formData, date: new Date(formData.date).toISOString() })
+        : addExpense({ ...formData, date: new Date(formData.date).toISOString() });
+
+      dispatch(action).unwrap().then(() => {
+        navigate('/expenses');
+      }).catch((err) => {
+        // Error is handled by Redux error state
+      });
     }
   };
 

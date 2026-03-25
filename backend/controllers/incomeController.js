@@ -42,11 +42,11 @@ const updateIncome = asyncHandler(async (req, res) => {
       throw new Error('Not authorized');
     }
 
-    income.title = title || income.title;
-    income.amount = amount || income.amount;
-    income.source = source || income.source;
-    income.date = date || income.date;
-    income.description = description || income.description;
+    income.title = title !== undefined ? title : income.title;
+    income.amount = amount !== undefined ? amount : income.amount;
+    income.source = source !== undefined ? source : income.source;
+    income.date = date !== undefined ? date : income.date;
+    income.description = description !== undefined ? description : income.description;
 
     const updatedIncome = await income.save();
     res.json(updatedIncome);
