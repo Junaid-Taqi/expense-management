@@ -8,14 +8,8 @@ import {
   selectYearFilter,
 } from "../store/slices/filterSlice";
 import { selectCurrencySymbol } from "../store/slices/currencySlice";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  Tooltip,
-  Legend,
-} from "recharts";
+import Highcharts from "highcharts";
+import HighchartsReact from "highcharts-react-official";
 import {
   MdAttachMoney,
   MdTrendingUp,
@@ -121,6 +115,162 @@ const Dashboard = () => {
     }
     return acc;
   }, []);
+
+  // Prepare data for Highcharts Monthly Summary
+  const getMonthlyData = () => {
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const incomeData = new Array(12).fill(0);
+    const expenseData = new Array(12).fill(0);
+
+    const currentYear =
+      yearFilter === "All" ? new Date().getFullYear() : parseInt(yearFilter);
+
+    rawIncomes.forEach((inc) => {
+      const d = new Date(inc.date);
+      if (d.getFullYear() === currentYear) {
+        incomeData[d.getMonth()] += parseFloat(inc.amount);
+      }
+    });
+
+    rawExpenses.forEach((exp) => {
+      const d = new Date(exp.date);
+      if (d.getFullYear() === currentYear) {
+        expenseData[d.getMonth()] += parseFloat(exp.amount);
+      }
+    });
+
+    return { months, incomeData, expenseData };
+  };
+
+  const { months, incomeData, expenseData } = getMonthlyData();
+
+  const chartOptions = {
+    chart: {
+      type: "areaspline",
+      backgroundColor: "transparent",
+      style: {
+        fontFamily: "Inter, sans-serif",
+      },
+    },
+    title: {
+      text: `Monthly Overview - ${yearFilter === "All" ? new Date().getFullYear() : yearFilter}`,
+      align: "left",
+      style: { fontWeight: "bold" },
+    },
+    xAxis: {
+      categories: months,
+      gridLineWidth: 0,
+      labels: {
+        style: { color: "#6c757d" },
+      },
+    },
+    yAxis: {
+      title: { text: null },
+      labels: {
+        formatter: function () {
+          return currencySymbol + this.value;
+        },
+        style: { color: "#6c757d" },
+      },
+      gridLineDashStyle: "Dash",
+    },
+    tooltip: {
+      shared: true,
+      valuePrefix: currencySymbol,
+      borderRadius: 10,
+      backgroundColor: "#fff",
+      borderWidth: 1,
+      borderColor: "#eee",
+    },
+    credits: { enabled: false },
+    plotOptions: {
+      areaspline: {
+        fillOpacity: 0.1,
+        marker: {
+          enabled: false,
+          states: {
+            hover: { enabled: true },
+          },
+        },
+      },
+    },
+    series: [
+      {
+        name: "Income",
+        data: incomeData,
+        color: "#06d6a0",
+      },
+      {
+        name: "Expenses",
+        data: expenseData,
+        color: "#ef4444",
+      },
+    ],
+  };
+
+  const pieChartOptions = {
+    chart: {
+      type: 'pie',
+      backgroundColor: 'transparent',
+      height: 300,
+      style: {
+        fontFamily: 'Inter, sans-serif'
+      }
+    },
+    title: {
+      text: null
+    },
+    tooltip: {
+      pointFormat: '{series.name}: <b>{point.y} ({point.percentage:.1f}%)</b>',
+      valuePrefix: currencySymbol
+    },
+    accessibility: {
+      point: {
+        valueSuffix: '%'
+      }
+    },
+    plotOptions: {
+      pie: {
+        allowPointSelect: true,
+        cursor: 'pointer',
+        dataLabels: {
+          enabled: false
+        },
+        showInLegend: true,
+        innerSize: '60%', // for donut effect
+        colors: COLORS
+      }
+    },
+    legend: {
+      itemStyle: {
+        fontSize: '11px',
+        fontWeight: 'normal',
+        color: '#666'
+      }
+    },
+    credits: { enabled: false },
+    series: [{
+      name: 'Expenses',
+      colorByPoint: true,
+      data: categoryData.map(item => ({
+        name: item.name,
+        y: item.value
+      }))
+    }]
+  };
 
   const handleBudgetSave = () => {
     if (!isNaN(tempBudget) && tempBudget > 0) {
@@ -387,39 +537,23 @@ const Dashboard = () => {
           <div className="table-container h-100">
             <h5 className="fw-bold mb-4">Expenses by Category</h5>
             {categoryData.length > 0 ? (
-              <div style={{ width: "100%", height: 300 }}>
-                <ResponsiveContainer>
-                  <PieChart>
-                    <Pie
-                      data={categoryData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={80}
-                      paddingAngle={5}
-                      dataKey="value"
-                    >
-                      {categoryData.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip
-                      formatter={(value) =>
-                        formatCurrency(value, currencySymbol)
-                      }
-                    />
-                    <Legend />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
+              <HighchartsReact 
+                highcharts={Highcharts} 
+                options={pieChartOptions} 
+              />
             ) : (
               <div className="d-flex align-items-center justify-content-center h-100 text-muted">
                 No data available
               </div>
             )}
+          </div>
+        </div>
+      </div>
+      {/* Highcharts Analytics Row */}
+      <div className="row mt-4">
+        <div className="col-12">
+          <div className="table-container p-4">
+            <HighchartsReact highcharts={Highcharts} options={chartOptions} />
           </div>
         </div>
       </div>
