@@ -5,16 +5,15 @@ import { logout } from "../../store/slices/authSlice";
 import {
   MdDashboard,
   MdOutlineReceiptLong,
-  MdAddBox,
   MdMenu,
   MdClose,
   MdLogout,
   MdOutlineCategory,
   MdOutlineSavings,
-  MdOutlineAddBusiness,
   MdOutlineAccountBalanceWallet,
   MdPerson,
   MdEventRepeat,
+  MdAssessment,
 } from "react-icons/md";
 
 const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
@@ -84,17 +83,6 @@ const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
             <span className="link-text">All Expenses</span>
           </NavLink>
 
-          <NavLink
-            to="/add-expense"
-            className={({ isActive }) =>
-              `nav-link text-decoration-none ${isActive ? "active" : ""}`
-            }
-            onClick={handleLinkClick}
-          >
-            <MdAddBox className="" />
-            <span className="link-text">Add Expense</span>
-          </NavLink>
-
           <hr className="my-2 border-secondary" />
 
           <NavLink
@@ -106,17 +94,6 @@ const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           >
             <MdOutlineSavings className="" />
             <span className="link-text">All Incomes</span>
-          </NavLink>
-
-          <NavLink
-            to="/add-income"
-            className={({ isActive }) =>
-              `nav-link text-decoration-none ${isActive ? "active" : ""}`
-            }
-            onClick={handleLinkClick}
-          >
-            <MdOutlineAddBusiness className="" />
-            <span className="link-text">Add Income</span>
           </NavLink>
 
           <hr className="my-2 border-secondary" />
@@ -152,6 +129,17 @@ const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
           >
             <MdEventRepeat className="" />
             <span className="link-text">Recurring</span>
+          </NavLink>
+
+          <NavLink
+            to="/reports"
+            className={({ isActive }) =>
+              `nav-link text-decoration-none ${isActive ? "active" : ""}`
+            }
+            onClick={handleLinkClick}
+          >
+            <MdAssessment className="" />
+            <span className="link-text">Reports</span>
           </NavLink>
 
           <NavLink

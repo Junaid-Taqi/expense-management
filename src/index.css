@@ -338,3 +338,31 @@ body {
   animation: shimmer 1.5s infinite linear;
   border-radius: 8px;
 }
+
+/* ManageBudgets Premium Styles */
+.premium-card {
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-color) !important;
+}
+
+.premium-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.1) !important;
+  border-color: var(--primary-color) !important;
+}
+
+.category-icon-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.extra-small {
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-weight: 700;
+}

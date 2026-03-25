@@ -1,213 +1,329 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchCategories, selectCategories } from "../store/slices/categorySlice";
-import { fetchBudgets, setBudget, selectAllBudgets } from "../store/slices/budgetSlice";
-import { selectCurrencySymbol } from "../store/slices/currencySlice";
-import { MdSave, MdOutlineAccountBalanceWallet, MdTrendingUp } from "react-icons/md";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectCategories,
+  fetchCategories,
+} from "../store/slices/categorySlice";
+import {
+  fetchBudgets,
+  setBudget,
+  selectAllBudgets,
+} from "../store/slices/budgetSlice";
+import { selectAllExpenses, fetchExpenses } from "../store/slices/expenseSlice";
+import {
+  selectMonthFilter,
+  selectYearFilter,
+} from "../store/slices/filterSlice";
+import {
+  Modal,
+  Button,
+  Form,
+  ProgressBar,
+  Card,
+  Row,
+  Col,
+} from "react-bootstrap";
+import { MdEdit, MdWarning, MdCheckCircle, MdTrendingUp } from "react-icons/md";
+import ConvertedAmount from "../components/Common/ConvertedAmount";
 
 const ManageBudgets = () => {
   const dispatch = useDispatch();
   const categories = useSelector(selectCategories);
   const budgets = useSelector(selectAllBudgets);
-  const currencySymbol = useSelector(selectCurrencySymbol);
-  
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [budgetValues, setBudgetValues] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const expenses = useSelector(selectAllExpenses);
+  const monthFilter = useSelector(selectMonthFilter);
+  const yearFilter = useSelector(selectYearFilter);
+
+  const [showModal, setShowModal] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [formData, setFormData] = useState({
+    category: "",
+    amount: "",
+    month:
+      monthFilter === "All" ? new Date().getMonth() : parseInt(monthFilter),
+    year:
+      yearFilter === "All" ? new Date().getFullYear() : parseInt(yearFilter),
+  });
 
   useEffect(() => {
     dispatch(fetchCategories());
-    dispatch(fetchBudgets({ month: selectedMonth, year: selectedYear }));
-  }, [dispatch, selectedMonth, selectedYear]);
+    dispatch(fetchExpenses());
+    const fetchParams = {
+      month:
+        monthFilter === "All" ? new Date().getMonth() : parseInt(monthFilter),
+      year:
+        yearFilter === "All" ? new Date().getFullYear() : parseInt(yearFilter),
+    };
+    dispatch(fetchBudgets(fetchParams));
+  }, [dispatch, monthFilter, yearFilter]);
 
-  useEffect(() => {
-    // Populate form with existing budgets
-    const values = {};
-    categories.forEach(cat => {
-      const budget = budgets.find(b => b.category === cat.name);
-      values[cat.name] = budget ? budget.amount : "";
-    });
-    setBudgetValues(values);
-  }, [categories, budgets]);
-
-  const handleInputChange = (categoryName, value) => {
-    setBudgetValues(prev => ({
-      ...prev,
-      [categoryName]: value
-    }));
-    setSuccess(false);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    
-    try {
-      const promises = Object.entries(budgetValues).map(([category, amount]) => {
-        if (amount === "" || amount === null) return null;
-        return dispatch(setBudget({
-          category,
-          amount: parseFloat(amount),
-          month: selectedMonth,
-          year: selectedYear
-        })).unwrap();
-      }).filter(p => p !== null);
-
-      await Promise.all(promises);
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 3000);
-    } catch (error) {
-      console.error("Failed to save budgets:", error);
-    } finally {
-      setLoading(false);
+  const handleShow = (budget = null) => {
+    if (budget) {
+      setEditMode(true);
+      setFormData({
+        category: budget.category,
+        amount: budget.amount.toString(),
+        month: budget.month,
+        year: budget.year,
+      });
+    } else {
+      setEditMode(false);
+      setFormData({
+        category: "",
+        amount: "",
+        month:
+          monthFilter === "All" ? new Date().getMonth() : parseInt(monthFilter),
+        year:
+          yearFilter === "All"
+            ? new Date().getFullYear()
+            : parseInt(yearFilter),
+      });
     }
+    setShowModal(true);
   };
 
-  const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
+  const handleClose = () => setShowModal(false);
 
-  const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(setBudget(formData))
+      .unwrap()
+      .then(() => handleClose());
+  };
+
+  const getActualSpending = (categoryName) => {
+    const targetMonth = formData.month;
+    const targetYear = formData.year;
+
+    return expenses
+      .filter((exp) => {
+        const d = new Date(exp.date);
+        return (
+          exp.category === categoryName &&
+          d.getMonth() === targetMonth &&
+          d.getFullYear() === targetYear
+        );
+      })
+      .reduce((sum, exp) => sum + exp.amount, 0);
+  };
 
   return (
     <div className="container-fluid py-2">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h4 className="mb-0 text-gradient">Manage Monthly Budgets</h4>
-        <div className="d-flex gap-2">
-          <select 
-            className="form-select form-select-sm" 
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
-          >
-            {months.map((m, i) => (
-              <option key={i} value={i}>{m}</option>
-            ))}
-          </select>
-          <select 
-            className="form-select form-select-sm" 
-            value={selectedYear}
-            onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-          >
-            {years.map(y => (
-              <option key={y} value={y}>{y}</option>
-            ))}
-          </select>
+        <div>
+          <h4 className="mb-1 text-gradient">Budget Management</h4>
+          <p className="text-muted small mb-0">
+            Track your spending against set limits
+          </p>
         </div>
+        <Button
+          variant="primary"
+          onClick={() => handleShow()}
+          className="fw-bold px-4 shadow-sm"
+        >
+          Set New Budget
+        </Button>
       </div>
 
-      <div className="row">
-        <div className="col-lg-8 col-xl-7">
-          <div className="table-container p-4">
-            <div className="d-flex align-items-center mb-4 text-primary">
-              <MdOutlineAccountBalanceWallet size={24} className="me-2" />
-              <h5 className="mb-0 fw-bold">Allocate Funds per Category</h5>
-            </div>
+      <Row className="g-4">
+        {categories.map((cat) => {
+          const budget = budgets.find((b) => b.category === cat.name);
+          const actual = getActualSpending(cat.name);
+          const limit = budget ? budget.amount : 0;
+          const percent = limit > 0 ? (actual / limit) * 100 : 0;
+          const isOver = actual > limit && limit > 0;
 
-            {success && (
-              <div className="alert alert-success d-flex align-items-center py-2 px-3 mb-4">
-                <MdTrendingUp className="me-2" />
-                <span>Budgets updated successfully!</span>
-              </div>
-            )}
+          return (
+            <Col key={cat._id} xl={4} lg={6}>
+              <Card className="border-0 shadow-sm h-100 premium-card">
+                <Card.Body className="p-4 border rounded-3">
+                  <div className="d-flex justify-content-between align-items-start mb-3">
+                    <div className="d-flex align-items-center">
+                      <div className="category-icon-circle me-3 bg-primary bg-opacity-10 text-primary">
+                        <MdTrendingUp size={20} />
+                      </div>
+                      <div>
+                        <h6 className="mb-0 text-gradient">{cat.name}</h6>
+                        <span className="text-muted extra-small">
+                          Monthly Limit
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      className="btn btn-link p-0 text-muted"
+                      onClick={() => handleShow(budget)}
+                    >
+                      <MdEdit size={18} />
+                    </button>
+                  </div>
 
-            <form onSubmit={handleSubmit}>
-              <div className="table-responsive">
-                <table className="table table-borderless align-middle">
-                  <thead>
-                    <tr className="text-muted border-bottom">
-                      <th className="pb-3 ps-0" style={{ width: '60%' }}>Category</th>
-                      <th className="pb-3 text-end" style={{ width: '40%' }}>Monthly Budget ({currencySymbol})</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {categories.map((cat) => (
-                      <tr key={cat._id} className="border-bottom">
-                        <td className="ps-0 py-3">
-                          <div className="d-flex align-items-center">
-                            <div 
-                              className="rounded-circle me-3" 
-                              style={{ width: '10px', height: '10px', backgroundColor: cat.color || '#6366f1' }}
-                            ></div>
-                            <span className="fw-semibold text-main">{cat.name}</span>
-                          </div>
-                        </td>
-                        <td className="pe-0 py-3">
-                          <div className="input-group input-group-sm justify-content-end">
-                            <input
-                              type="number"
-                              className="form-control text-end fs-6"
-                              style={{ maxWidth: '150px', border: 'none', background: '#f8fafc', borderRadius: '8px' }}
-                              placeholder="0.00"
-                              value={budgetValues[cat.name] || ""}
-                              onChange={(e) => handleInputChange(cat.name, e.target.value)}
-                            />
-                          </div>
-                        </td>
-                      </tr>
+                  <div className="mb-4">
+                    <div className="d-flex justify-content-between align-items-end mb-2">
+                      <div className="text-muted small">
+                        Spent:{" "}
+                        <small className="fw-bold">
+                          <ConvertedAmount amount={actual} />
+                        </small>
+                      </div>
+                      <div className="text-muted small">
+                        Budget:{" "}
+                        <small className="fw-bold">
+                          <ConvertedAmount amount={limit} />
+                        </small>
+                      </div>
+                    </div>
+                    <ProgressBar
+                      now={percent > 100 ? 100 : percent}
+                      variant={
+                        isOver ? "danger" : percent > 80 ? "warning" : "primary"
+                      }
+                      style={{ height: "8px" }}
+                      className="rounded-pill bg-light"
+                    />
+                  </div>
+
+                  <div className="d-flex align-items-center justify-content-between pt-3 border-top mt-auto">
+                    {limit === 0 ? (
+                      <span className="badge bg-light text-muted fw-normal">
+                        No limit set
+                      </span>
+                    ) : isOver ? (
+                      <span className="text-danger small fw-semibold d-flex align-items-center">
+                        <MdWarning className="me-1" /> Over budget by{" "}
+                        <ConvertedAmount amount={actual - limit} />
+                      </span>
+                    ) : (
+                      <span className="text-success small fw-semibold d-flex align-items-center">
+                        <MdCheckCircle className="me-1" />{" "}
+                        <ConvertedAmount amount={limit - actual} /> &nbsp;
+                        Remaining
+                      </span>
+                    )}
+                    <span className="fw-semibold small">
+                      {Math.round(percent)}%
+                    </span>
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+          );
+        })}
+      </Row>
+
+      <Modal show={showModal} onHide={handleClose} centered>
+        <Modal.Header closeButton className="">
+          <Modal.Title className="fw-semibold">
+            {editMode ? "Edit Category Budget" : "Set Category Budget"}
+          </Modal.Title>
+        </Modal.Header>
+        <Form onSubmit={handleSubmit}>
+          <Modal.Body>
+            <Form.Group className="mb-3">
+              <Form.Label className="small fw-semibold text-muted">
+                Category
+              </Form.Label>
+              <Form.Select
+                value={formData.category}
+                onChange={(e) =>
+                  setFormData({ ...formData, category: e.target.value })
+                }
+                required
+                className="p-3 bg-light"
+              >
+                <option value="">Select Category</option>
+                {categories.map((c) => (
+                  <option key={c._id} value={c.name}>
+                    {c.name}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label className="small fw-semibold text-muted">
+                Monthly Limit
+              </Form.Label>
+              <Form.Control
+                type="number"
+                value={formData.amount}
+                onChange={(e) =>
+                  setFormData({ ...formData, amount: e.target.value })
+                }
+                required
+                placeholder="0.00"
+                className="p-3 bg-light"
+              />
+            </Form.Group>
+            <Row>
+              <Col>
+                <Form.Group className="mb-3">
+                  <Form.Label className="small fw-semibold text-muted">
+                    Month
+                  </Form.Label>
+                  <Form.Select
+                    value={formData.month}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        month: parseInt(e.target.value),
+                      })
+                    }
+                    className="p-3 bg-light"
+                  >
+                    {[
+                      "January",
+                      "February",
+                      "March",
+                      "April",
+                      "May",
+                      "June",
+                      "July",
+                      "August",
+                      "September",
+                      "October",
+                      "November",
+                      "December",
+                    ].map((m, i) => (
+                      <option key={i} value={i}>
+                        {m}
+                      </option>
                     ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {categories.length === 0 && (
-                <div className="text-center py-4">
-                  <p className="text-muted">No categories found. Please add categories first.</p>
-                </div>
-              )}
-
-              <div className="d-grid mt-4">
-                <button
-                  type="submit"
-                  className="btn btn-primary d-flex align-items-center justify-content-center py-2"
-                  disabled={loading || categories.length === 0}
-                >
-                  {loading ? (
-                    <span className="spinner-border spinner-border-sm me-2"></span>
-                  ) : (
-                    <MdSave className="me-2" />
-                  )}
-                  Save All Budgets
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <div className="col-lg-4 col-xl-5 mt-4 mt-lg-0">
-          <div className="bg-light p-4 rounded-4 border border-opacity-10 border-primary h-100">
-            <h6 className="fw-bold mb-3 d-flex align-items-center text-primary">
-              <MdTrendingUp className="me-2" /> Why set a budget?
-            </h6>
-            <p className="text-muted small mb-0">
-              Setting budgets helps you stay on track with your financial goals. 
-              Once set, your dashboard will show progress bars for each category, 
-              alerting you if you're approaching or exceeding your limits.
-            </p>
-            <hr className="my-4" />
-            <div className="p-3 bg-white rounded-3 shadow-sm mb-3">
-              <div className="d-flex justify-content-between mb-1">
-                <span className="small fw-semibold">Groceries</span>
-                <span className="small text-danger fw-bold">95%</span>
-              </div>
-              <div className="progress" style={{ height: '6px' }}>
-                <div className="progress-bar bg-danger" role="progressbar" style={{ width: '95%' }}></div>
-              </div>
-            </div>
-            <div className="p-3 bg-white rounded-3 shadow-sm">
-              <div className="d-flex justify-content-between mb-1">
-                <span className="small fw-semibold">Rent</span>
-                <span className="small text-success fw-bold">100%</span>
-              </div>
-              <div className="progress" style={{ height: '6px' }}>
-                <div className="progress-bar bg-success" role="progressbar" style={{ width: '100%' }}></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                  </Form.Select>
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group className="mb-3">
+                  <Form.Label className="small fw-semibold text-muted">
+                    Year
+                  </Form.Label>
+                  <Form.Control
+                    type="number"
+                    value={formData.year}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        year: parseInt(e.target.value),
+                      })
+                    }
+                    className="p-3 bg-light"
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+          </Modal.Body>
+          <Modal.Footer className="">
+            <Button variant="light" onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              type="submit"
+              className="fw-semibold text-white shadow"
+            >
+              Save Budget
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
     </div>
   );
 };

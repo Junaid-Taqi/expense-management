@@ -11,7 +11,7 @@ const FloatingActionButton = () => {
       icon: <MdAttachMoney />,
       label: 'Add Expense',
       onClick: () => {
-        navigate('/add-expense');
+        navigate('/expenses');
         setIsOpen(false);
       },
       color: 'bg-danger'
@@ -20,7 +20,7 @@ const FloatingActionButton = () => {
       icon: <MdTrendingUp />,
       label: 'Add Income',
       onClick: () => {
-        navigate('/add-income');
+        navigate('/incomes');
         setIsOpen(false);
       },
       color: 'bg-success'

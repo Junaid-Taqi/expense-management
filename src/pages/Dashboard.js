@@ -369,7 +369,7 @@ const Dashboard = () => {
 
   return (
     <div className="container-fluid py-2">
-      <h3 className="mb-4 text-gradient">Enterprise Dashboard</h3>
+      <h4 className="mb-4 text-gradient">Enterprise Dashboard</h4>
 
       <div className="row mb-4 g-4">
         {/* Net Balance Card */}

@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchRecurring, createRecurring, deleteRecurring } from "../store/slices/recurringSlice";
-import { fetchCategories, selectCategories } from "../store/slices/categorySlice";
+import {
+  fetchRecurring,
+  createRecurring,
+  deleteRecurring,
+} from "../store/slices/recurringSlice";
+import {
+  fetchCategories,
+  selectCategories,
+} from "../store/slices/categorySlice";
 import { selectCurrencySymbol } from "../store/slices/currencySlice";
 import { MdDelete, MdAdd, MdEventRepeat } from "react-icons/md";
 import { formatCurrency } from "../utils/formatCurrency";
@@ -17,7 +24,9 @@ const ManageRecurring = () => {
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [frequency, setFrequency] = useState("monthly");
-  const [startDate, setStartDate] = useState(new Date().toISOString().split("T")[0]);
+  const [startDate, setStartDate] = useState(
+    new Date().toISOString().split("T")[0],
+  );
 
   useEffect(() => {
     dispatch(fetchRecurring());
@@ -32,13 +41,26 @@ const ManageRecurring = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(createRecurring({ type, title, amount: parseFloat(amount), category, frequency, startDate }));
+    dispatch(
+      createRecurring({
+        type,
+        title,
+        amount: parseFloat(amount),
+        category,
+        frequency,
+        startDate,
+      }),
+    );
     setTitle("");
     setAmount("");
   };
 
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to stop this recurring transaction?")) {
+    if (
+      window.confirm(
+        "Are you sure you want to stop this recurring transaction?",
+      )
+    ) {
       dispatch(deleteRecurring(id));
     }
   };
@@ -47,7 +69,7 @@ const ManageRecurring = () => {
     <div className="container-fluid py-2">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h4 className="mb-0 text-gradient d-flex align-items-center">
-          <MdEventRepeat className="me-2" /> Recurring Transactions
+          Recurring Transactions
         </h4>
       </div>
 
@@ -58,19 +80,21 @@ const ManageRecurring = () => {
             <h5 className="mb-4">Schedule New</h5>
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
-                <label className="form-label small fw-bold text-muted">Type</label>
+                <label className="form-label small fw-bold text-muted">
+                  Type
+                </label>
                 <div className="d-flex gap-2">
                   <button
                     type="button"
-                    className={`btn btn-sm flex-grow-1 ${type === 'expense' ? 'btn-danger' : 'btn-outline-danger'}`}
-                    onClick={() => setType('expense')}
+                    className={`btn btn-sm flex-grow-1 ${type === "expense" ? "btn-danger" : "btn-outline-danger"}`}
+                    onClick={() => setType("expense")}
                   >
                     Expense
                   </button>
                   <button
                     type="button"
-                    className={`btn btn-sm flex-grow-1 ${type === 'income' ? 'btn-success' : 'btn-outline-success'}`}
-                    onClick={() => setType('income')}
+                    className={`btn btn-sm flex-grow-1 ${type === "income" ? "btn-success" : "btn-outline-success"}`}
+                    onClick={() => setType("income")}
                   >
                     Income
                   </button>
@@ -78,7 +102,9 @@ const ManageRecurring = () => {
               </div>
 
               <div className="mb-3">
-                <label className="form-label small fw-bold text-muted">Title</label>
+                <label className="form-label small fw-bold text-muted">
+                  Title
+                </label>
                 <input
                   type="text"
                   className="form-control"
@@ -91,7 +117,9 @@ const ManageRecurring = () => {
 
               <div className="row mb-3">
                 <div className="col-6">
-                  <label className="form-label small fw-bold text-muted">Amount</label>
+                  <label className="form-label small fw-bold text-muted">
+                    Amount
+                  </label>
                   <input
                     type="number"
                     className="form-control"
@@ -102,7 +130,9 @@ const ManageRecurring = () => {
                   />
                 </div>
                 <div className="col-6">
-                  <label className="form-label small fw-bold text-muted">Frequency</label>
+                  <label className="form-label small fw-bold text-muted">
+                    Frequency
+                  </label>
                   <select
                     className="form-select"
                     value={frequency}
@@ -117,7 +147,9 @@ const ManageRecurring = () => {
               </div>
 
               <div className="mb-3">
-                <label className="form-label small fw-bold text-muted">Category / Source</label>
+                <label className="form-label small fw-bold text-muted">
+                  Category / Source
+                </label>
                 <select
                   className="form-select"
                   value={category}
@@ -133,7 +165,9 @@ const ManageRecurring = () => {
               </div>
 
               <div className="mb-4">
-                <label className="form-label small fw-bold text-muted">Start Date</label>
+                <label className="form-label small fw-bold text-muted">
+                  Start Date
+                </label>
                 <input
                   type="date"
                   className="form-control"
@@ -143,7 +177,10 @@ const ManageRecurring = () => {
                 />
               </div>
 
-              <button type="submit" className="btn btn-primary w-100 py-2 fw-bold">
+              <button
+                type="submit"
+                className="btn btn-primary w-100 py-2 fw-bold"
+              >
                 <MdAdd className="me-1" /> Schedule Transaction
               </button>
             </form>
@@ -178,14 +215,18 @@ const ManageRecurring = () => {
                       <tr key={item._id}>
                         <td>
                           <div className="fw-bold">{item.title}</div>
-                          <small className={`badge bg-${item.type === 'expense' ? 'danger' : 'success'} bg-opacity-10 text-${item.type === 'expense' ? 'danger' : 'success'}`}>
+                          <small
+                            className={`badge bg-${item.type === "expense" ? "danger" : "success"} bg-opacity-10 text-${item.type === "expense" ? "danger" : "success"}`}
+                          >
                             {item.type}
                           </small>
                         </td>
                         <td className="text-capitalize">{item.frequency}</td>
                         <td>{item.category}</td>
-                        <td className={`fw-bold ${item.type === 'expense' ? 'text-danger' : 'text-success'}`}>
-                          {item.type === 'expense' ? '-' : '+'}
+                        <td
+                          className={`fw-bold ${item.type === "expense" ? "text-danger" : "text-success"}`}
+                        >
+                          {item.type === "expense" ? "-" : "+"}
                           {formatCurrency(item.amount, currencySymbol)}
                         </td>
                         <td className="small text-muted">
