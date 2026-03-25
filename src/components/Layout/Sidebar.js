@@ -1,0 +1,165 @@
+import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
+import {
+  MdDashboard,
+  MdOutlineReceiptLong,
+  MdAddBox,
+  MdMenu,
+  MdClose,
+  MdLogout,
+  MdOutlineCategory,
+  MdOutlineSavings,
+  MdOutlineAddBusiness,
+} from "react-icons/md";
+
+const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
+  const [collapsed, setCollapsed] = useState(false);
+
+  // Close sidebar on mobile when a link is clicked
+  const handleLinkClick = () => {
+    if (window.innerWidth <= 768) {
+      setIsMobileOpen(false);
+    }
+  };
+
+  return (
+    <>
+      <div
+        className={`sidebar d-flex flex-column py-4 ${collapsed ? "collapsed" : ""} ${isMobileOpen ? "show" : ""}`}
+      >
+        <div className="d-flex justify-content-between align-items-center px-4 mb-4">
+          <h4
+            className={`text-primary m-0 fw-bold ${collapsed ? "d-none" : ""}`}
+          >
+            Expensify
+          </h4>
+          <button
+            className="toggle-btn d-none d-md-block"
+            onClick={() => setCollapsed(!collapsed)}
+          >
+            <MdMenu />
+          </button>
+
+          <button
+            className="toggle-btn d-md-none"
+            onClick={() => setIsMobileOpen(false)}
+          >
+            <MdClose />
+          </button>
+        </div>
+
+        <nav className="nav flex-column mt-2">
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              `nav-link text-decoration-none ${isActive ? "active" : ""}`
+            }
+            onClick={handleLinkClick}
+            end
+          >
+            <MdDashboard />
+            <span className="link-text">Dashboard</span>
+          </NavLink>
+
+          <NavLink
+            to="/expenses"
+            className={({ isActive }) =>
+              `nav-link text-decoration-none ${isActive ? "active" : ""}`
+            }
+            onClick={handleLinkClick}
+          >
+            <MdOutlineReceiptLong />
+            <span className="link-text">All Expenses</span>
+          </NavLink>
+
+          <NavLink
+            to="/add-expense"
+            className={({ isActive }) =>
+              `nav-link text-decoration-none ${isActive ? "active" : ""}`
+            }
+            onClick={handleLinkClick}
+          >
+            <MdAddBox className="text-danger" />
+            <span className="link-text">Add Expense</span>
+          </NavLink>
+
+          <hr className="my-2 border-secondary" />
+
+          <NavLink
+            to="/incomes"
+            className={({ isActive }) =>
+              `nav-link text-decoration-none ${isActive ? "active" : ""}`
+            }
+            onClick={handleLinkClick}
+          >
+            <MdOutlineSavings className="text-success" />
+            <span className="link-text">All Incomes</span>
+          </NavLink>
+
+          <NavLink
+            to="/add-income"
+            className={({ isActive }) =>
+              `nav-link text-decoration-none ${isActive ? "active" : ""}`
+            }
+            onClick={handleLinkClick}
+          >
+            <MdOutlineAddBusiness className="text-success" />
+            <span className="link-text">Add Income</span>
+          </NavLink>
+
+          <hr className="my-2 border-secondary" />
+
+          <NavLink
+            to="/categories"
+            className={({ isActive }) =>
+              `nav-link text-decoration-none ${isActive ? "active" : ""}`
+            }
+            onClick={handleLinkClick}
+          >
+            <MdOutlineCategory className="text-primary" />
+            <span className="link-text">Categories</span>
+          </NavLink>
+        </nav>
+
+        {/* Logout Section at the Bottom */}
+        <div className="mt-auto px-3 pb-4">
+          <button
+            className="btn btn-outline-danger border-0 w-100 d-flex align-items-center py-2"
+            onClick={() => {
+              if (window.confirm("Are you sure you want to logout?")) {
+                // In a real app, clear auth tokens here
+                alert("Logged out successfully.");
+                // window.location.href = '/login';
+              }
+            }}
+            title="Logout"
+          >
+            <MdLogout className={collapsed ? "" : "me-2"} size={20} />
+            <span className={`fw-semibold ${collapsed ? "d-none" : ""}`}>
+              Logout
+            </span>
+          </button>
+        </div>
+      </div>
+
+      {/* Overlay for mobile */}
+      {isMobileOpen && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            zIndex: 999,
+          }}
+          className="d-md-none"
+          onClick={() => setIsMobileOpen(false)}
+        />
+      )}
+    </>
+  );
+};
+
+export default Sidebar;
