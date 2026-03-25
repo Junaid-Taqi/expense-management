@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../../store/slices/authSlice";
 import {
   MdDashboard,
   MdOutlineReceiptLong,
@@ -14,11 +16,20 @@ import {
 
 const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
   const [collapsed, setCollapsed] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // Close sidebar on mobile when a link is clicked
   const handleLinkClick = () => {
     if (window.innerWidth <= 768) {
       setIsMobileOpen(false);
+    }
+  };
+
+  const handleLogout = () => {
+    if (window.confirm("Are you sure you want to logout?")) {
+      dispatch(logout());
+      navigate("/login");
     }
   };
 
@@ -28,13 +39,11 @@ const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
         className={`sidebar d-flex flex-column py-4 ${collapsed ? "collapsed" : ""} ${isMobileOpen ? "show" : ""}`}
       >
         <div className="d-flex justify-content-between align-items-center px-4 mb-4">
-          <h4
-            className={`text-primary m-0 fw-bold ${collapsed ? "d-none" : ""}`}
-          >
-            Expensify
-          </h4>
+          <h5 className={`m-0 fw-bold ${collapsed ? "d-none" : ""}`}>
+            Expense Wallet
+          </h5>
           <button
-            className="toggle-btn d-none d-md-block"
+            className="toggle-btn d-none d-md-block hamburgerIcon"
             onClick={() => setCollapsed(!collapsed)}
           >
             <MdMenu />
@@ -125,13 +134,7 @@ const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
         <div className="mt-auto px-3 pb-4">
           <button
             className="btn btn-outline-danger border-0 w-100 d-flex align-items-center py-2"
-            onClick={() => {
-              if (window.confirm("Are you sure you want to logout?")) {
-                // In a real app, clear auth tokens here
-                alert("Logged out successfully.");
-                // window.location.href = '/login';
-              }
-            }}
+            onClick={handleLogout}
             title="Logout"
           >
             <MdLogout className={collapsed ? "" : "me-2"} size={20} />
