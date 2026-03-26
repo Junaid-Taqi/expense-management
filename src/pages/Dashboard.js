@@ -11,13 +11,12 @@ import { selectCurrencySymbol } from "../store/slices/currencySlice";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import {
-  MdAttachMoney,
-  MdTrendingUp,
-  MdAccountBalanceWallet,
-  MdEdit,
-  MdInfoOutline,
-  MdTrendingDown,
-} from "react-icons/md";
+  FiTrendingUp,
+  FiCreditCard,
+  FiEdit3,
+  FiInfo,
+  FiTrendingDown,
+} from "react-icons/fi";
 
 import DashboardSkeleton from "../components/Common/DashboardSkeleton";
 import ConvertedAmount from "../components/Common/ConvertedAmount";
@@ -196,7 +195,7 @@ const Dashboard = () => {
     };
   };
 
-  const mom = getMoMComparison();
+  getMoMComparison();
   const topSpentCategory =
     categoryData.length > 0
       ? [...categoryData].sort((a, b) => b.value - a.value)[0]
@@ -378,7 +377,7 @@ const Dashboard = () => {
             <div
               className={`icon-wrapper ${balance < 0 ? "danger" : "success"} me-3`}
             >
-              <MdAccountBalanceWallet />
+              <FiCreditCard />
             </div>
             <div>
               <p
@@ -401,7 +400,7 @@ const Dashboard = () => {
         <div className="col-md-3">
           <div className="stat-card p-4 d-flex align-items-center h-100">
             <div className="icon-wrapper success me-3">
-              <MdTrendingUp />
+              <FiTrendingUp />
             </div>
             <div>
               <p
@@ -421,7 +420,7 @@ const Dashboard = () => {
         <div className="col-md-3">
           <div className="stat-card p-4 d-flex align-items-center h-100">
             <div className="icon-wrapper danger me-3">
-              <MdTrendingDown />
+              <FiTrendingDown />
             </div>
             <div>
               <p
@@ -441,7 +440,7 @@ const Dashboard = () => {
         <div className="col-md-3">
           <div className="stat-card p-4 d-flex align-items-center h-100">
             <div className="icon-wrapper primary me-3">
-              <MdTrendingUp />
+              <FiTrendingUp />
             </div>
             <div>
               <p
@@ -511,7 +510,7 @@ const Dashboard = () => {
                   className="btn btn-sm btn-link p-0 text-primary"
                   onClick={() => (window.location.href = "/budgets")}
                 >
-                  <MdEdit size={14} />
+                  <FiEdit3 size={14} />
                 </button>
               </div>
             </div>
@@ -569,7 +568,7 @@ const Dashboard = () => {
               background: "linear-gradient(90deg, #4361ee 0%, #7209b7 100%)",
             }}
           >
-            <MdInfoOutline size={24} className="me-3" />
+            <FiInfo size={24} className="me-3" />
             <div className="flex-grow-1">
               <span className="fw-semibold">Financial Highlight: </span>
               {topSpentCategory ? (
@@ -604,7 +603,7 @@ const Dashboard = () => {
             <div className="table-container p-4">
               <div className="d-flex justify-content-between align-items-center mb-4">
                 <h5 className="mb-0 fw-bold d-flex align-items-center">
-                  <MdInfoOutline className="text-primary me-2" /> Budget Status
+                  <FiInfo className="text-primary me-2" /> Budget Status
                   by Category
                 </h5>
                 <small className="text-muted">

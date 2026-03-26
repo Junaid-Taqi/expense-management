@@ -3,14 +3,14 @@ import { useSelector, useDispatch } from "react-redux";
 import { selectAllExpenses, fetchExpenses } from "../store/slices/expenseSlice";
 import { selectAllIncomes, fetchIncomes } from "../store/slices/incomeSlice";
 import {
-  MdAnalytics,
-  MdFileDownload,
-  MdFilterList,
-  MdDateRange,
-  MdTrendingUp,
-  MdTrendingDown,
-  MdAccountBalanceWallet,
-} from "react-icons/md";
+  FiBarChart2,
+  FiDownload,
+  FiFilter,
+  FiCalendar,
+  FiTrendingUp,
+  FiTrendingDown,
+  FiCreditCard,
+} from "react-icons/fi";
 import ConvertedAmount from "../components/Common/ConvertedAmount";
 
 const Reports = () => {
@@ -119,13 +119,14 @@ const Reports = () => {
     <div className="container-fluid py-2">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h4 className="mb-0 text-gradient d-flex align-items-center">
-          Financial Reports
+          <FiBarChart2 className="me-2" /> Financial Reports
         </h4>
         <button
-          className="btn btn-primary d-flex align-items-center fw-bold px-4"
+          className="btn btn-primary d-flex align-items-center fw-bold px-4 shadow-sm"
+          style={{ borderRadius: "12px", padding: "0.6rem 1.2rem" }}
           onClick={handleExport}
         >
-          <MdFileDownload className="me-2" size={20} /> Export CSV
+          <FiDownload className="me-2" size={20} /> Export CSV
         </button>
       </div>
 
@@ -214,7 +215,7 @@ const Reports = () => {
 
           <div className="col text-end">
             <span className="text-muted small">
-              <MdFilterList className="me-1" /> {data.length} Transactions Found
+              <FiFilter className="me-1" /> {data.length} Transactions Found
             </span>
           </div>
         </div>
@@ -225,7 +226,7 @@ const Reports = () => {
         <div className="col-md-4">
           <div className="stat-card p-4 d-flex align-items-center h-100">
             <div className="icon-wrapper success me-3">
-              <MdTrendingUp />
+              <FiTrendingUp />
             </div>
             <div>
               <p className="text-muted small mb-1 fw-bold">TOTAL INCOME</p>
@@ -238,7 +239,7 @@ const Reports = () => {
         <div className="col-md-4">
           <div className="stat-card p-4 d-flex align-items-center h-100">
             <div className="icon-wrapper danger me-3">
-              <MdTrendingDown />
+              <FiTrendingDown />
             </div>
             <div>
               <p className="text-muted small mb-1 fw-bold">TOTAL EXPENSES</p>
@@ -253,7 +254,7 @@ const Reports = () => {
             <div
               className={`icon-wrapper ${balance >= 0 ? "primary" : "danger"} me-3`}
             >
-              <MdAccountBalanceWallet />
+              <FiCreditCard />
             </div>
             <div>
               <p className="text-muted small mb-1 fw-bold">NET CASHFLOW</p>
@@ -271,7 +272,7 @@ const Reports = () => {
       <div className="table-container">
         <div className="d-flex justify-content-between align-items-center mb-3 px-2">
           <h5 className="mb-0 fw-bold">Transaction Breakdown</h5>
-          <MdDateRange className="text-muted" />
+          <FiCalendar className="text-muted" />
         </div>
         <div className="table-responsive">
           <table className="table table-hover align-middle">

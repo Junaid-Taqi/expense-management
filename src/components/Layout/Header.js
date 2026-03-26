@@ -16,12 +16,12 @@ import { selectAllExpenses } from "../../store/slices/expenseSlice";
 import { selectAllIncomes } from "../../store/slices/incomeSlice";
 import { exportToCSV } from "../../utils/exportCsv";
 import {
-  MdDarkMode,
-  MdLightMode,
-  MdDownload,
-  MdMenu,
-  MdLogout,
-} from "react-icons/md";
+  FiMoon,
+  FiSun,
+  FiDownload,
+  FiMenu,
+  FiLogOut,
+} from "react-icons/fi";
 import { logout } from "../../store/slices/authSlice";
 
 const currencies = [
@@ -65,42 +65,38 @@ const Header = ({ setIsMobileOpen }) => {
     dispatch(logout());
   };
 
-  // Generate dynamic years based on current date (e.g., last 5 years + next 2)
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 10 }, (_, i) => currentYear - 5 + i);
 
   return (
     <header
-      className="d-flex align-items-center justify-content-between p-3 mb-4 bg-card border-bottom sticky-top"
+      className="d-flex align-items-center justify-content-between p-3 mb-4 sticky-top"
       style={{
-        backgroundColor: "var(--bg-card)",
-        borderColor: "var(--border-color)",
+        background: "var(--bg-card)",
+        backdropFilter: "var(--glass-blur)",
+        WebkitBackdropFilter: "var(--glass-blur)",
+        borderBottom: "var(--glass-border)",
         zIndex: 50,
+        margin: "12px 24px 24px 24px",
+        borderRadius: "20px",
+        boxShadow: "var(--shadow-sm)",
       }}
     >
-      {/* Left side: Mobile Toggle & Title (for mobile) */}
       <div className="d-flex align-items-center">
         <button
           className="toggle-btn me-3 d-md-none"
           onClick={() => setIsMobileOpen(true)}
         >
-          <MdMenu />
+          <FiMenu />
         </button>
-        <h4 className="m-0 fw-bold text-gradient d-md-none">Expense Wallet</h4>
+        <h4 className="m-0 fw-bold text-gradient d-md-none">Wallet</h4>
       </div>
 
-      {/* Right side: Controls */}
       <div className="d-flex align-items-center gap-2 gap-sm-3 ms-auto flex-wrap justify-content-end">
-        {/* Date Filters */}
         <div className="d-flex align-items-center gap-2">
           <select
             className="form-select form-select-sm"
-            style={{
-              width: "auto",
-              backgroundColor: "var(--bg-color)",
-              color: "var(--text-main)",
-              border: "1px solid var(--border-color)",
-            }}
+            style={{ width: "auto" }}
             value={monthFilter}
             onChange={(e) => dispatch(setMonthFilter(e.target.value))}
           >
@@ -114,12 +110,7 @@ const Header = ({ setIsMobileOpen }) => {
 
           <select
             className="form-select form-select-sm"
-            style={{
-              width: "auto",
-              backgroundColor: "var(--bg-color)",
-              color: "var(--text-main)",
-              border: "1px solid var(--border-color)",
-            }}
+            style={{ width: "auto" }}
             value={yearFilter}
             onChange={(e) => dispatch(setYearFilter(e.target.value))}
           >
@@ -132,19 +123,10 @@ const Header = ({ setIsMobileOpen }) => {
           </select>
         </div>
 
-        {/* Currency Selector */}
         <div className="d-flex align-items-center">
-          <span className="me-2 text-muted fw-semibold d-none d-sm-inline">
-            Currency:
-          </span>
           <select
             className="form-select form-select-sm"
-            style={{
-              width: "auto",
-              backgroundColor: "var(--bg-color)",
-              color: "var(--text-main)",
-              border: "1px solid var(--border-color)",
-            }}
+            style={{ width: "auto" }}
             value={currencyCode}
             onChange={(e) => {
               const selected = currencies.find(
@@ -161,34 +143,32 @@ const Header = ({ setIsMobileOpen }) => {
           </select>
         </div>
 
-        {/* CSV Export Button */}
         <button
           className="btn btn-sm btn-outline-primary d-flex align-items-center"
+          style={{ borderRadius: "10px", padding: "0.4rem 0.8rem" }}
           onClick={() => {
             exportToCSV(expensesList, "All_Expenses");
             exportToCSV(incomesList, "All_Incomes");
           }}
           title="Export CSV"
         >
-          <MdDownload className="me-1" />{" "}
+          <FiDownload className="me-1" />
           <span className="d-none d-sm-inline">Export</span>
         </button>
 
-        {/* Theme Toggle Button */}
         <button
           className="toggle-btn"
-          style={{ width: "35px", height: "35px" }}
+          style={{ width: "38px", height: "38px" }}
           onClick={() => dispatch(toggleTheme())}
           title={`Switch to ${theme === "light" ? "Dark" : "Light"} Mode`}
         >
           {theme === "light" ? (
-            <MdDarkMode size={20} />
+            <FiMoon size={18} />
           ) : (
-            <MdLightMode size={20} />
+            <FiSun size={18} />
           )}
         </button>
 
-        {/* User Profile & Logout */}
         {userInfo && (
           <div
             className="d-flex align-items-center gap-2 ms-2 ps-3 border-start"
@@ -210,10 +190,11 @@ const Header = ({ setIsMobileOpen }) => {
             </div>
             <button
               className="btn btn-sm btn-outline-danger d-flex align-items-center"
+              style={{ borderRadius: "10px", padding: "0.4rem 0.6rem" }}
               onClick={logoutHandler}
               title="Logout"
             >
-              <MdLogout size={18} />
+              <FiLogOut size={18} />
             </button>
           </div>
         )}

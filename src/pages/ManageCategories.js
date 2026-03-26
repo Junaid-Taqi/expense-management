@@ -4,18 +4,17 @@ import {
   addCategory,
   deleteCategory,
   updateCategory,
-  selectCategories,
   fetchCategories,
 } from "../store/slices/categorySlice";
 import { selectAllExpenses, fetchExpenses } from "../store/slices/expenseSlice";
 import {
-  MdAdd,
-  MdDelete,
-  MdCategory,
-  MdEdit,
-  MdClose,
-  MdSave,
-} from "react-icons/md";
+  FiPlus,
+  FiTrash2,
+  FiLayers,
+  FiEdit3,
+  FiX,
+  FiSave,
+} from "react-icons/fi";
 
 const ManageCategories = () => {
   const dispatch = useDispatch();
@@ -133,7 +132,7 @@ const ManageCategories = () => {
         <div className="col-lg-8">
           <div className="stat-card p-4">
             <h5 className="mb-4 d-flex align-items-center">
-              <MdCategory className="text-primary me-2" size={24} />
+              <FiLayers className="text-primary me-2" size={24} />
               {editingId ? "Edit Category" : "Add New Category"}
             </h5>
 
@@ -159,24 +158,27 @@ const ManageCategories = () => {
                 <>
                   <button
                     type="submit"
-                    className="btn btn-success d-flex align-items-center px-4 rounded-2"
+                    className="btn btn-success d-flex align-items-center px-4"
+                    style={{ borderRadius: "12px" }}
                   >
-                    <MdSave className="me-1" /> Save
+                    <FiSave className="me-2" /> Save
                   </button>
                   <button
                     type="button"
                     onClick={cancelEdit}
-                    className="btn btn-outline-secondary d-flex align-items-center px-4 rounded-2"
+                    className="btn btn-outline-secondary d-flex align-items-center px-4"
+                    style={{ borderRadius: "12px" }}
                   >
-                    <MdClose className="me-1" /> Cancel
+                    <FiX className="me-2" /> Cancel
                   </button>
                 </>
               ) : (
                 <button
                   type="submit"
-                  className="btn btn-primary d-flex align-items-center px-4 rounded-2"
+                  className="btn btn-primary d-flex align-items-center px-4"
+                  style={{ borderRadius: "12px" }}
                 >
-                  <MdAdd className="me-1" /> Add
+                  <FiPlus className="me-2" /> Add
                 </button>
               )}
             </form>
@@ -200,22 +202,24 @@ const ManageCategories = () => {
                       </td>
                       <td>
                         <span className="badge bg-light text-dark border">
-                          <MdCategory className="me-1" />{" "}
+                          <FiLayers className="me-1" />{" "}
                           {cat.icon || "category"}
                         </span>
                       </td>
                       <td className="text-end">
                         <button
-                          className="btn btn-sm btn-outline-primary me-2"
+                          className="btn btn-sm btn-outline-primary me-2 border-0"
+                          style={{ borderRadius: "8px" }}
                           onClick={() => startEdit(cat)}
                         >
-                          <MdEdit />
+                          <FiEdit3 size={18} />
                         </button>
                         <button
-                          className="btn btn-sm btn-outline-danger"
+                          className="btn btn-sm btn-outline-danger border-0"
+                          style={{ borderRadius: "8px" }}
                           onClick={() => handleDelete(cat._id)}
                         >
-                          <MdDelete />
+                          <FiTrash2 size={18} />
                         </button>
                       </td>
                     </tr>

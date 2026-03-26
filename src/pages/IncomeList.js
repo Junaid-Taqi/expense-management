@@ -10,7 +10,7 @@ import {
   selectMonthFilter,
   selectYearFilter,
 } from "../store/slices/filterSlice";
-import { MdDelete, MdEdit, MdDownload, MdAdd } from "react-icons/md";
+import { FiTrash2, FiEdit3, FiDownload, FiPlus } from "react-icons/fi";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import ConvertedAmount from "../components/Common/ConvertedAmount";
 
@@ -134,17 +134,19 @@ const IncomeList = () => {
         <div className="d-flex align-items-center gap-3">
           <button
             className="btn btn-success d-flex align-items-center text-white shadow-sm"
+            style={{ borderRadius: "12px", padding: "0.6rem 1.2rem" }}
             onClick={() => handleShow()}
           >
-            <MdAdd className="me-1" /> Add Income
+            <FiPlus className="me-2" /> Add Income
           </button>
 
           <button
             className="btn btn-sm btn-outline-success d-flex align-items-center"
+            style={{ borderRadius: "12px", padding: "0.6rem 1.2rem" }}
             onClick={handleExportCSV}
             disabled={filteredIncomes.length === 0}
           >
-            <MdDownload className="me-1" /> Export CSV
+            <FiDownload className="me-2" /> Export CSV
           </button>
 
           <div className="d-flex align-items-center gap-2">
@@ -207,16 +209,18 @@ const IncomeList = () => {
                       </td>
                       <td className="text-end">
                         <button
-                          className="btn btn-sm btn-outline-secondary me-2"
+                          className="btn btn-sm btn-outline-secondary me-2 border-0"
+                          style={{ borderRadius: "8px" }}
                           onClick={() => handleShow(inc)}
                         >
-                          <MdEdit />
+                          <FiEdit3 size={18} />
                         </button>
                         <button
-                          className="btn btn-sm btn-outline-danger"
+                          className="btn btn-sm btn-outline-danger border-0"
+                          style={{ borderRadius: "8px" }}
                           onClick={() => handleDelete(inc._id)}
                         >
-                          <MdDelete />
+                          <FiTrash2 size={18} />
                         </button>
                       </td>
                     </tr>

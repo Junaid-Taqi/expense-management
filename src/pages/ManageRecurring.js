@@ -10,7 +10,7 @@ import {
   selectCategories,
 } from "../store/slices/categorySlice";
 import { selectCurrencySymbol } from "../store/slices/currencySlice";
-import { MdDelete, MdAdd, MdEventRepeat } from "react-icons/md";
+import { FiTrash2, FiPlus, FiRepeat } from "react-icons/fi";
 import { formatCurrency } from "../utils/formatCurrency";
 
 const ManageRecurring = () => {
@@ -69,7 +69,7 @@ const ManageRecurring = () => {
     <div className="container-fluid py-2">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h4 className="mb-0 text-gradient d-flex align-items-center">
-          Recurring Transactions
+          <FiRepeat className="me-2" /> Recurring Transactions
         </h4>
       </div>
 
@@ -179,9 +179,10 @@ const ManageRecurring = () => {
 
               <button
                 type="submit"
-                className="btn btn-primary w-100 py-2 fw-bold"
+                className="btn btn-primary w-100 py-2 fw-bold shadow-sm"
+                style={{ borderRadius: "12px" }}
               >
-                <MdAdd className="me-1" /> Schedule Transaction
+                <FiPlus className="me-2" /> Schedule Transaction
               </button>
             </form>
           </div>
@@ -234,10 +235,11 @@ const ManageRecurring = () => {
                         </td>
                         <td className="text-end">
                           <button
-                            className="btn btn-sm btn-outline-danger"
+                            className="btn btn-sm btn-outline-danger border-0"
+                            style={{ borderRadius: "8px" }}
                             onClick={() => handleDelete(item._id)}
                           >
-                            <MdDelete />
+                            <FiTrash2 size={18} />
                           </button>
                         </td>
                       </tr>

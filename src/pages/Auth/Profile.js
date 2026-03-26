@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUserProfile, clearError } from "../../store/slices/authSlice";
-import { MdPerson, MdEmail, MdLock, MdSave, MdCheckCircle } from "react-icons/md";
+import { FiUser, FiMail, FiLock, FiSave, FiCheckCircle } from "react-icons/fi";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -46,7 +46,7 @@ const Profile = () => {
         <div className="col-md-8 col-lg-6">
           <div className="table-container p-4 p-md-5">
             <h4 className="mb-4 text-gradient d-flex align-items-center">
-              <MdPerson className="me-2" /> User Profile
+              <FiUser className="me-2" /> User Profile
             </h4>
 
             {message && (
@@ -61,7 +61,7 @@ const Profile = () => {
             )}
             {success && (
               <div className="alert alert-success py-2 px-3 mb-4 rounded-3 d-flex align-items-center small">
-                <MdCheckCircle className="me-2" size={18} />
+                <FiCheckCircle className="me-2" size={18} />
                 Profile Updated Successfully!
               </div>
             )}
@@ -70,8 +70,8 @@ const Profile = () => {
               <div className="mb-3">
                 <label className="form-label small fw-bold text-muted">Full Name</label>
                 <div className="input-group">
-                  <span className="input-group-text bg-light border-end-0">
-                    <MdPerson className="text-primary" />
+                  <span className="input-group-text bg-light border-0">
+                    <FiUser className="text-primary" />
                   </span>
                   <input
                     type="text"
@@ -87,8 +87,8 @@ const Profile = () => {
               <div className="mb-3">
                 <label className="form-label small fw-bold text-muted">Email Address</label>
                 <div className="input-group">
-                  <span className="input-group-text bg-light border-end-0">
-                    <MdEmail className="text-primary" />
+                  <span className="input-group-text bg-light border-0">
+                    <FiMail className="text-primary" />
                   </span>
                   <input
                     type="email"
@@ -104,8 +104,8 @@ const Profile = () => {
               <div className="mb-3">
                 <label className="form-label small fw-bold text-muted">New Password (leave blank to keep current)</label>
                 <div className="input-group">
-                  <span className="input-group-text bg-light border-end-0">
-                    <MdLock className="text-primary" />
+                  <span className="input-group-text bg-light border-0">
+                    <FiLock className="text-primary" />
                   </span>
                   <input
                     type="password"
@@ -120,8 +120,8 @@ const Profile = () => {
               <div className="mb-4">
                 <label className="form-label small fw-bold text-muted">Confirm New Password</label>
                 <div className="input-group">
-                  <span className="input-group-text bg-light border-end-0">
-                    <MdLock className="text-primary" />
+                  <span className="input-group-text bg-light border-0">
+                    <FiLock className="text-primary" />
                   </span>
                   <input
                     type="password"
@@ -141,7 +141,7 @@ const Profile = () => {
                 {loading ? (
                   <span className="spinner-border spinner-border-sm me-2"></span>
                 ) : (
-                  <MdSave className="me-2" />
+                  <FiSave className="me-2" />
                 )}
                 Update Profile
               </button>

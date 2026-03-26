@@ -23,7 +23,7 @@ import {
   Row,
   Col,
 } from "react-bootstrap";
-import { MdEdit, MdWarning, MdCheckCircle, MdTrendingUp } from "react-icons/md";
+import { FiEdit3, FiAlertTriangle, FiCheckCircle, FiTrendingUp } from "react-icons/fi";
 import ConvertedAmount from "../components/Common/ConvertedAmount";
 
 const ManageBudgets = () => {
@@ -140,7 +140,7 @@ const ManageBudgets = () => {
                   <div className="d-flex justify-content-between align-items-start mb-3">
                     <div className="d-flex align-items-center">
                       <div className="category-icon-circle me-3 bg-primary bg-opacity-10 text-primary">
-                        <MdTrendingUp size={20} />
+                        <FiTrendingUp size={20} />
                       </div>
                       <div>
                         <h6 className="mb-0 text-gradient">{cat.name}</h6>
@@ -150,10 +150,10 @@ const ManageBudgets = () => {
                       </div>
                     </div>
                     <button
-                      className="btn btn-link p-0 text-muted"
+                      className="btn btn-link p-0 text-muted border-0"
                       onClick={() => handleShow(budget)}
                     >
-                      <MdEdit size={18} />
+                      <FiEdit3 size={18} />
                     </button>
                   </div>
 
@@ -189,12 +189,12 @@ const ManageBudgets = () => {
                       </span>
                     ) : isOver ? (
                       <span className="text-danger small fw-semibold d-flex align-items-center">
-                        <MdWarning className="me-1" /> Over budget by{" "}
+                        <FiAlertTriangle className="me-1" /> Over budget by{" "}
                         <ConvertedAmount amount={actual - limit} />
                       </span>
                     ) : (
                       <span className="text-success small fw-semibold d-flex align-items-center">
-                        <MdCheckCircle className="me-1" />{" "}
+                        <FiCheckCircle className="me-1" />{" "}
                         <ConvertedAmount amount={limit - actual} /> &nbsp;
                         Remaining
                       </span>
