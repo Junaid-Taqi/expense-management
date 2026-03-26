@@ -1,0 +1,266 @@
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top left, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+              radial-gradient(circle at bottom right, rgba(168, 85, 247, 0.15) 0%, transparent 40%),
+              var(--bg-color);
+  font-family: 'Poppins', sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+
+.auth-page::before {
+  content: '';
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 40%;
+  height: 40%;
+  background: var(--primary-color);
+  filter: blur(120px);
+  opacity: 0.1;
+  border-radius: 50%;
+  animation: float 15s infinite alternate ease-in-out;
+}
+
+.auth-page::after {
+  content: '';
+  position: absolute;
+  bottom: -10%;
+  right: -10%;
+  width: 40%;
+  height: 40%;
+  background: var(--secondary-color);
+  filter: blur(120px);
+  opacity: 0.15;
+  border-radius: 50%;
+  animation: float 20s infinite alternate-reverse ease-in-out;
+}
+
+@keyframes float {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(100px, 50px) scale(1.2); }
+}
+
+.auth-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 28px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 450px;
+  padding: 3rem 2.5rem;
+  z-index: 10;
+  animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+[data-bs-theme="dark"] .auth-card {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.auth-header h2 {
+  font-weight: 800;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.auth-header p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.auth-input-group {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.auth-input-icon {
+  position: absolute;
+  top: 50%;
+  left: 1.25rem;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+  z-index: 5;
+}
+
+.auth-input {
+  background: rgba(255, 255, 255, 0.5) !important;
+  border: 1.5px solid rgba(99, 102, 241, 0.2) !important; /* Elegant subtle border */
+  border-radius: 16px !important;
+  padding: 12px 12px 12px 3.5rem !important;
+  font-size: 1rem !important;
+  height: 56px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  color: var(--text-main) !important;
+}
+
+[data-bs-theme="dark"] .auth-input {
+  background: rgba(15, 23, 42, 0.5) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.auth-input:focus {
+  background: var(--bg-card) !important;
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15) !important;
+  transform: translateY(-2px);
+}
+
+.auth-input:focus + .auth-input-icon {
+  color: var(--primary-color);
+}
+
+.auth-label {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.auth-btn {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
+  border: none !important;
+  border-radius: 16px !important;
+  height: 56px !important;
+  font-weight: 700 !important;
+  font-size: 1rem !important;
+  letter-spacing: 0.5px !important;
+  text-transform: uppercase !important;
+  box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  margin-top: 1rem;
+}
+
+.auth-btn:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.4) !important;
+}
+
+.auth-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.auth-link {
+  color: var(--primary-color);
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.auth-link:hover {
+  color: var(--secondary-color);
+  text-decoration: underline;
+}
+
+.error-alert {
+  border-radius: 16px !important;
+  border: none !important;
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #ef4444 !important;
+  font-weight: 500 !important;
+  margin-bottom: 1.5rem !important;
+  animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+/* reCAPTCHA Placeholder Styles */
+.captcha-container {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 12px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+[data-bs-theme="dark"] .captcha-container {
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.captcha-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.captcha-checkbox {
+  width: 28px;
+  height: 28px;
+  border: 2px solid #c1c1c1;
+  border-radius: 3px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.captcha-label {
+  font-size: 0.9rem;
+  color: #555;
+  font-weight: 500;
+}
+
+[data-bs-theme="dark"] .captcha-label {
+  color: #94a3b8;
+}
+
+.captcha-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.captcha-logo img {
+  width: 32px;
+}
+
+.captcha-logo span {
+  font-size: 0.65rem;
+  color: #9b9b9b;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
+}

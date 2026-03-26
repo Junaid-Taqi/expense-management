@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Card, Alert, Container, Row, Col } from 'react-bootstrap';
+import { Form, Button, Alert } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import { FiUser, FiMail, FiLock, FiCheckCircle, FiUserPlus } from 'react-icons/fi';
 import { register, clearError } from '../../store/slices/authSlice';
+import './Auth.css';
 
 const Signup = () => {
   const [name, setName] = useState('');
@@ -36,82 +38,111 @@ const Signup = () => {
   };
 
   return (
-    <Container className="mt-5">
-      <Row className="justify-content-md-center">
-        <Col xs={12} md={6}>
-          <Card className="shadow-lg border-0">
-            <Card.Body className="p-5">
-              <h2 className="text-center mb-4 fw-bold">Sign Up</h2>
-              {message && <Alert variant="danger">{message}</Alert>}
-              {error && <Alert variant="danger">{error}</Alert>}
-              <Form onSubmit={submitHandler}>
-                <Form.Group className="mb-3" controlId="name">
-                  <Form.Label>Name</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                  ></Form.Control>
-                </Form.Group>
+    <div className="auth-page">
+      <div className="auth-card" style={{ maxWidth: '500px' }}>
+        <div className="auth-header">
+          <h2>Create Account</h2>
+          <p>Join us to start tracking your expenses professionally</p>
+        </div>
 
-                <Form.Group className="mb-3" controlId="email">
-                  <Form.Label>Email Address</Form.Label>
-                  <Form.Control
-                    type="email"
-                    placeholder="Enter email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  ></Form.Control>
-                </Form.Group>
+        {message && (
+          <Alert variant="danger" className="error-alert">
+            {message}
+          </Alert>
+        )}
+        {error && (
+          <Alert variant="danger" className="error-alert">
+            {error}
+          </Alert>
+        )}
 
-                <Form.Group className="mb-3" controlId="password">
-                  <Form.Label>Password</Form.Label>
-                  <Form.Control
-                    type="password"
-                    placeholder="Enter password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  ></Form.Control>
-                </Form.Group>
+        <Form onSubmit={submitHandler}>
+          <div className="auth-input-group">
+            <label className="auth-label">Full Name</label>
+            <div className="position-relative">
+              <Form.Control
+                type="text"
+                placeholder="Enter your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className="auth-input"
+              />
+              <FiUser className="auth-input-icon" />
+            </div>
+          </div>
 
-                <Form.Group className="mb-4" controlId="confirmPassword">
-                  <Form.Label>Confirm Password</Form.Label>
-                  <Form.Control
-                    type="password"
-                    placeholder="Confirm password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                  ></Form.Control>
-                </Form.Group>
+          <div className="auth-input-group">
+            <label className="auth-label">Email Address</label>
+            <div className="position-relative">
+              <Form.Control
+                type="email"
+                placeholder="yasin@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="auth-input"
+              />
+              <FiMail className="auth-input-icon" />
+            </div>
+          </div>
 
-                <Button
-                  type="submit"
-                  variant="primary"
-                  className="w-100 py-2 fw-bold"
-                  disabled={loading}
-                >
-                  {loading ? 'Registering...' : 'Sign Up'}
-                </Button>
-              </Form>
+          <div className="auth-input-group">
+            <label className="auth-label">Password</label>
+            <div className="position-relative">
+              <Form.Control
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="auth-input"
+              />
+              <FiLock className="auth-input-icon" />
+            </div>
+          </div>
 
-              <Row className="py-3 mt-4 text-center">
-                <Col>
-                  Have an Account?{' '}
-                  <Link to="/login" className="text-decoration-none fw-bold">
-                    Login
-                  </Link>
-                </Col>
-              </Row>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+          <div className="auth-input-group">
+            <label className="auth-label">Confirm Password</label>
+            <div className="position-relative">
+              <Form.Control
+                type="password"
+                placeholder="••••••••"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                className="auth-input"
+              />
+              <FiCheckCircle className="auth-input-icon" />
+            </div>
+          </div>
+
+          <Button
+            type="submit"
+            className="w-100 auth-btn"
+            disabled={loading}
+          >
+            {loading ? (
+              <span className="d-flex align-items-center justify-content-center">
+                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Creating account...
+              </span>
+            ) : (
+              <span className="d-flex align-items-center justify-content-center">
+                Sign Up <FiUserPlus className="ms-2" />
+              </span>
+            )}
+          </Button>
+        </Form>
+
+        <div className="auth-footer">
+          Already have an account?{' '}
+          <Link to="/login" className="auth-link">
+            Log In
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 };
 

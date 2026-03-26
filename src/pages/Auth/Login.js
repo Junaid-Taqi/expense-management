@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Card, Alert, Container, Row, Col } from 'react-bootstrap';
+import { Form, Button, Alert } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import { FiMail, FiLock, FiArrowRight } from 'react-icons/fi';
+import ReCAPTCHA from 'react-google-recaptcha';
 import { login, clearError } from '../../store/slices/authSlice';
+import './Auth.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [captchaValue, setCaptchaValue] = useState(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -22,65 +26,98 @@ const Login = () => {
     };
   }, [userInfo, navigate, dispatch]);
 
+  const onCaptchaChange = (value) => {
+    setCaptchaValue(value);
+  };
+
   const submitHandler = (e) => {
     e.preventDefault();
+    if (!captchaValue) {
+      alert('Please verify you are not a robot');
+      return;
+    }
     dispatch(login({ email, password }));
   };
 
   return (
-    <Container className="mt-5">
-      <Row className="justify-content-md-center">
-        <Col xs={12} md={6}>
-          <Card className="shadow-lg border-0">
-            <Card.Body className="p-5">
-              <h2 className="text-center mb-4 fw-bold">Login</h2>
-              {error && <Alert variant="danger">{error}</Alert>}
-              <Form onSubmit={submitHandler}>
-                <Form.Group className="mb-3" controlId="email">
-                  <Form.Label>Email Address</Form.Label>
-                  <Form.Control
-                    type="email"
-                    placeholder="Enter email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  ></Form.Control>
-                </Form.Group>
+    <div className="auth-page">
+      <div className="auth-card">
+        <div className="auth-header">
+          <h2>Welcome Back</h2>
+          <p>Sign in to manage your finances elegantly</p>
+        </div>
 
-                <Form.Group className="mb-4" controlId="password">
-                  <Form.Label>Password</Form.Label>
-                  <Form.Control
-                    type="password"
-                    placeholder="Enter password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  ></Form.Control>
-                </Form.Group>
+        {error && (
+          <Alert variant="danger" className="error-alert">
+            {error}
+          </Alert>
+        )}
 
-                <Button
-                  type="submit"
-                  variant="primary"
-                  className="w-100 py-2 fw-bold"
-                  disabled={loading}
-                >
-                  {loading ? 'Logging in...' : 'Sign In'}
-                </Button>
-              </Form>
+        <Form onSubmit={submitHandler}>
+          <div className="auth-input-group">
+            <label className="auth-label">Email Address</label>
+            <div className="position-relative">
+              <Form.Control
+                type="email"
+                placeholder="yasin@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="auth-input"
+              />
+              <FiMail className="auth-input-icon" />
+            </div>
+          </div>
 
-              <Row className="py-3 mt-4 text-center">
-                <Col>
-                  New Customer?{' '}
-                  <Link to="/signup" className="text-decoration-none fw-bold">
-                    Register
-                  </Link>
-                </Col>
-              </Row>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+          <div className="auth-input-group">
+            <label className="auth-label">Password</label>
+            <div className="position-relative">
+              <Form.Control
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="auth-input"
+              />
+              <FiLock className="auth-input-icon" />
+            </div>
+          </div>
+
+          <div className="captcha-wrapper mb-4">
+            <ReCAPTCHA
+              sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // Google Test Key
+              onChange={onCaptchaChange}
+              theme="light" // Can be dynamic based on your project theme if needed
+            />
+          </div>
+
+          <Button
+            type="submit"
+            className="w-100 auth-btn"
+            disabled={loading}
+          >
+            {loading ? (
+              <span className="d-flex align-items-center justify-content-center">
+                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Logging in...
+              </span>
+            ) : (
+              <span className="d-flex align-items-center justify-content-center">
+                Sign In <FiArrowRight className="ms-2" />
+              </span>
+            )}
+          </Button>
+        </Form>
+
+        <div className="auth-footer">
+          Don't have an account?{' '}
+          <Link to="/signup" className="auth-link">
+            Create Account
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 };
 
