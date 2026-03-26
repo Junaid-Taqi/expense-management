@@ -368,7 +368,7 @@ const Dashboard = () => {
 
   return (
     <div className="container-fluid py-2">
-      <h4 className="mb-4 text-gradient">Enterprise Dashboard</h4>
+      {/* <h4 className="mb-4 text-gradient">Enterprise Dashboard</h4> */}
 
       <div className="row mb-4 g-4">
         {/* Net Balance Card */}
@@ -596,76 +596,6 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Category Budgets Row */}
-      {budgets.length > 0 && (
-        <div className="row mb-4">
-          <div className="col-12">
-            <div className="table-container p-4">
-              <div className="d-flex justify-content-between align-items-center mb-4">
-                <h5 className="mb-0 fw-bold d-flex align-items-center">
-                  <FiInfo className="text-primary me-2" /> Budget Status
-                  by Category
-                </h5>
-                <small className="text-muted">
-                  Filtered for{" "}
-                  {monthFilter === "All"
-                    ? months[new Date().getMonth()]
-                    : months[parseInt(monthFilter)]}{" "}
-                  {yearFilter === "All" ? new Date().getFullYear() : yearFilter}
-                </small>
-              </div>
-              <div className="row g-4">
-                {categoryData
-                  .filter((cd) => cd.budget > 0)
-                  .map((cat, idx) => {
-                    const percent = (cat.value / cat.budget) * 100;
-                    return (
-                      <div className="col-md-4 col-xl-3" key={idx}>
-                        <div className="p-3 border rounded-3">
-                          <div className="d-flex justify-content-between mb-2">
-                            <span className="fw-semibold text-main small">
-                              {cat.name}
-                            </span>
-                            <span
-                              className={`small fw-bold ${percent > 100 ? "text-danger" : "text-muted"}`}
-                            >
-                              {percent.toFixed(0)}%
-                            </span>
-                          </div>
-                          <div
-                            className="progress mb-2"
-                            style={{ height: "6px" }}
-                          >
-                            <div
-                              className={`progress-bar ${getProgressColor(percent)}`}
-                              role="progressbar"
-                              style={{ width: `${Math.min(percent, 100)}%` }}
-                            ></div>
-                          </div>
-                          <div className="d-flex justify-content-between">
-                            <small
-                              className="text-muted"
-                              style={{ fontSize: "0.7rem" }}
-                            >
-                              <ConvertedAmount amount={cat.value} /> used
-                            </small>
-                            <small
-                              className="text-muted"
-                              style={{ fontSize: "0.7rem" }}
-                            >
-                              <ConvertedAmount amount={cat.budget} /> limit
-                            </small>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
       <div className="row g-4">
         <div className="col-lg-8">
           <div className="table-container h-100">
@@ -787,6 +717,77 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Category Budgets Row */}
+      {budgets.length > 0 && (
+        <div className="row mt-4">
+          <div className="col-12">
+            <div className="table-container p-4">
+              <div className="d-flex justify-content-between align-items-center mb-4">
+                <h5 className="mb-0 fw-bold d-flex align-items-center">
+                  <FiInfo className="text-primary me-2" /> Budget Status by
+                  Category
+                </h5>
+                <small className="text-muted">
+                  Filtered for{" "}
+                  {monthFilter === "All"
+                    ? months[new Date().getMonth()]
+                    : months[parseInt(monthFilter)]}{" "}
+                  {yearFilter === "All" ? new Date().getFullYear() : yearFilter}
+                </small>
+              </div>
+              <div className="row g-4">
+                {categoryData
+                  .filter((cd) => cd.budget > 0)
+                  .map((cat, idx) => {
+                    const percent = (cat.value / cat.budget) * 100;
+                    return (
+                      <div className="col-md-4 col-xl-3" key={idx}>
+                        <div className="p-3 border rounded-3">
+                          <div className="d-flex justify-content-between mb-2">
+                            <span className="fw-semibold text-main small">
+                              {cat.name}
+                            </span>
+                            <span
+                              className={`small fw-bold ${percent > 100 ? "text-danger" : "text-muted"}`}
+                            >
+                              {percent.toFixed(0)}%
+                            </span>
+                          </div>
+                          <div
+                            className="progress mb-2"
+                            style={{ height: "6px" }}
+                          >
+                            <div
+                              className={`progress-bar ${getProgressColor(percent)}`}
+                              role="progressbar"
+                              style={{ width: `${Math.min(percent, 100)}%` }}
+                            ></div>
+                          </div>
+                          <div className="d-flex justify-content-between">
+                            <small
+                              className="text-muted"
+                              style={{ fontSize: "0.7rem" }}
+                            >
+                              <ConvertedAmount amount={cat.value} /> used
+                            </small>
+                            <small
+                              className="text-muted"
+                              style={{ fontSize: "0.7rem" }}
+                            >
+                              <ConvertedAmount amount={cat.budget} /> limit
+                            </small>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Highcharts Analytics Row */}
       <div className="row mt-4">
         <div className="col-12">
