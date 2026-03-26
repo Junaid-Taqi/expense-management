@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Form, Button, Alert } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
-import { FiMail, FiLock, FiArrowRight } from 'react-icons/fi';
-import ReCAPTCHA from 'react-google-recaptcha';
-import { login, clearError } from '../../store/slices/authSlice';
-import './Auth.css';
+import React, { useState, useEffect } from "react";
+import { Form, Button, Alert } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { FiMail, FiLock, FiArrowRight, FiEye, FiEyeOff } from "react-icons/fi";
+import ReCAPTCHA from "react-google-recaptcha";
+import { login, clearError } from "../../store/slices/authSlice";
+import "./Auth.css";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [captchaValue, setCaptchaValue] = useState(null);
 
   const dispatch = useDispatch();
@@ -19,7 +20,7 @@ const Login = () => {
 
   useEffect(() => {
     if (userInfo) {
-      navigate('/');
+      navigate("/");
     }
     return () => {
       dispatch(clearError());
@@ -33,7 +34,7 @@ const Login = () => {
   const submitHandler = (e) => {
     e.preventDefault();
     if (!captchaValue) {
-      alert('Please verify you are not a robot');
+      alert("Please verify you are not a robot");
       return;
     }
     dispatch(login({ email, password }));
@@ -43,7 +44,7 @@ const Login = () => {
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-header">
-          <h2>Welcome Back</h2>
+          <h2>Login</h2>
           <p>Sign in to manage your finances elegantly</p>
         </div>
 
@@ -73,7 +74,7 @@ const Login = () => {
             <label className="auth-label">Password</label>
             <div className="position-relative">
               <Form.Control
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -81,6 +82,14 @@ const Login = () => {
                 className="auth-input"
               />
               <FiLock className="auth-input-icon" />
+              <button
+                type="button"
+                className="password-toggle-icon"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <FiEyeOff /> : <FiEye />}
+              </button>
             </div>
           </div>
 
@@ -92,14 +101,14 @@ const Login = () => {
             />
           </div>
 
-          <Button
-            type="submit"
-            className="w-100 auth-btn"
-            disabled={loading}
-          >
+          <Button type="submit" className="w-100 auth-btn" disabled={loading}>
             {loading ? (
               <span className="d-flex align-items-center justify-content-center">
-                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
                 Logging in...
               </span>
             ) : (
@@ -111,7 +120,7 @@ const Login = () => {
         </Form>
 
         <div className="auth-footer">
-          Don't have an account?{' '}
+          Don't have an account?{" "}
           <Link to="/signup" className="auth-link">
             Create Account
           </Link>

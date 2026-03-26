@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { FiUser, FiMail, FiLock, FiCheckCircle, FiUserPlus } from 'react-icons/fi';
+import { FiUser, FiMail, FiLock, FiCheckCircle, FiUserPlus, FiEye, FiEyeOff } from 'react-icons/fi';
 import { register, clearError } from '../../store/slices/authSlice';
 import './Auth.css';
 
@@ -11,6 +11,8 @@ const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [message, setMessage] = useState(null);
 
   const dispatch = useDispatch();
@@ -91,7 +93,7 @@ const Signup = () => {
             <label className="auth-label">Password</label>
             <div className="position-relative">
               <Form.Control
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -99,6 +101,14 @@ const Signup = () => {
                 className="auth-input"
               />
               <FiLock className="auth-input-icon" />
+              <button
+                type="button"
+                className="password-toggle-icon"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? <FiEyeOff /> : <FiEye />}
+              </button>
             </div>
           </div>
 
@@ -106,7 +116,7 @@ const Signup = () => {
             <label className="auth-label">Confirm Password</label>
             <div className="position-relative">
               <Form.Control
-                type="password"
+                type={showConfirmPassword ? 'text' : 'password'}
                 placeholder="••••••••"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -114,6 +124,14 @@ const Signup = () => {
                 className="auth-input"
               />
               <FiCheckCircle className="auth-input-icon" />
+              <button
+                type="button"
+                className="password-toggle-icon"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+              >
+                {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
+              </button>
             </div>
           </div>
 

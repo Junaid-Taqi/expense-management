@@ -77,11 +77,11 @@
 
 .auth-header {
   text-align: center;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .auth-header h2 {
-  font-weight: 800;
+  font-weight: 600;
   font-size: 2rem;
   margin-bottom: 0.5rem;
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
@@ -115,7 +115,7 @@
   background: rgba(255, 255, 255, 0.5) !important;
   border: 1.5px solid rgba(99, 102, 241, 0.2) !important; /* Elegant subtle border */
   border-radius: 16px !important;
-  padding: 12px 12px 12px 3.5rem !important;
+  padding: 12px 3.5rem 12px 3.5rem !important; /* Increased right padding for eye icon */
   font-size: 1rem !important;
   height: 56px !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -125,6 +125,29 @@
 [data-bs-theme="dark"] .auth-input {
   background: rgba(15, 23, 42, 0.5) !important;
   border: 1.5px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.password-toggle-icon {
+  position: absolute;
+  top: 50%;
+  right: 1.25rem;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 6;
+  background: none;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.password-toggle-icon:hover {
+  color: var(--primary-color);
+  transform: translateY(-50%) scale(1.1);
 }
 
 .auth-input:focus {
