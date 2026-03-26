@@ -15,13 +15,7 @@ import {
 import { selectAllExpenses } from "../../store/slices/expenseSlice";
 import { selectAllIncomes } from "../../store/slices/incomeSlice";
 import { exportToCSV } from "../../utils/exportCsv";
-import {
-  FiMoon,
-  FiSun,
-  FiDownload,
-  FiMenu,
-  FiLogOut,
-} from "react-icons/fi";
+import { FiMoon, FiSun, FiDownload, FiMenu, FiLogOut } from "react-icons/fi";
 import { logout } from "../../store/slices/authSlice";
 
 const currencies = [
@@ -143,7 +137,7 @@ const Header = ({ setIsMobileOpen }) => {
           </select>
         </div>
 
-        <button
+        {/* <button
           className="btn btn-sm btn-outline-primary d-flex align-items-center"
           style={{ borderRadius: "10px", padding: "0.4rem 0.8rem" }}
           onClick={() => {
@@ -154,19 +148,19 @@ const Header = ({ setIsMobileOpen }) => {
         >
           <FiDownload className="me-1" />
           <span className="d-none d-sm-inline">Export</span>
-        </button>
+        </button> */}
 
         <button
           className="toggle-btn"
-          style={{ width: "38px", height: "38px" }}
+          style={{
+            width: "38px",
+            height: "38px",
+            borderColor: "var(--primary-color)",
+          }}
           onClick={() => dispatch(toggleTheme())}
           title={`Switch to ${theme === "light" ? "Dark" : "Light"} Mode`}
         >
-          {theme === "light" ? (
-            <FiMoon size={18} />
-          ) : (
-            <FiSun size={18} />
-          )}
+          {theme === "light" ? <FiMoon size={18} /> : <FiSun size={18} />}
         </button>
 
         {userInfo && (

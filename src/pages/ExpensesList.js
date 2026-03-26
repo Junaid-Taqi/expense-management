@@ -252,13 +252,12 @@ const ExpensesList = () => {
             <Row className="g-3">
               <Col md={12}>
                 <Form.Group>
-                  <Form.Label className="small fw-bold text-muted">
-                    Description / Title
+                  <Form.Label className="small fw-semibold text-muted mb-1">
+                    Title / Description
                   </Form.Label>
                   <Form.Control
                     type="text"
-                    placeholder="Enter expense title"
-                    className="p-3 bg-light border-0 shadow-sm"
+                    placeholder="e.g. Grocery shopping, Netflix..."
                     value={formData.title}
                     onChange={(e) =>
                       setFormData({ ...formData, title: e.target.value })
@@ -269,14 +268,15 @@ const ExpensesList = () => {
               </Col>
               <Col md={6}>
                 <Form.Group>
-                  <Form.Label className="small fw-bold text-muted">
+                  <Form.Label className="small fw-semibold text-muted mb-1">
                     Amount
                   </Form.Label>
                   <Form.Control
                     type="number"
                     step="0.01"
+                    min="0"
                     placeholder="0.00"
-                    className="p-3 bg-light border-0 shadow-sm font-monospace"
+                    className="font-monospace"
                     value={formData.amount}
                     onChange={(e) =>
                       setFormData({ ...formData, amount: e.target.value })
@@ -287,12 +287,11 @@ const ExpensesList = () => {
               </Col>
               <Col md={6}>
                 <Form.Group>
-                  <Form.Label className="small fw-bold text-muted">
+                  <Form.Label className="small fw-semibold text-muted mb-1">
                     Date
                   </Form.Label>
                   <Form.Control
                     type="date"
-                    className="p-3 bg-light border-0 shadow-sm"
                     value={formData.date}
                     onChange={(e) =>
                       setFormData({ ...formData, date: e.target.value })
@@ -303,11 +302,10 @@ const ExpensesList = () => {
               </Col>
               <Col md={12}>
                 <Form.Group>
-                  <Form.Label className="small fw-bold text-muted">
+                  <Form.Label className="small fw-semibold text-muted mb-1">
                     Category
                   </Form.Label>
                   <Form.Select
-                    className="p-3 bg-light border-0 shadow-sm"
                     value={formData.category}
                     onChange={(e) =>
                       setFormData({ ...formData, category: e.target.value })
@@ -329,20 +327,23 @@ const ExpensesList = () => {
             <Button
               variant="light"
               onClick={handleClose}
-              className="px-4 fw-bold"
+              className="px-4 fw-semibold"
+              style={{ borderRadius: "12px" }}
             >
               Cancel
             </Button>
             <Button
               variant="primary"
               type="submit"
-              className="px-5 fw-bold text-white shadow"
+              className="px-5 fw-bold text-white"
+              style={{ borderRadius: "12px" }}
             >
               {editMode ? "Save Changes" : "Add Expense"}
             </Button>
           </Modal.Footer>
         </Form>
       </Modal>
+
     </div>
   );
 };
