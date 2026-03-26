@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 import { toggleTheme, selectTheme } from "../../store/slices/themeSlice";
 import {
   setCurrency,
@@ -12,10 +13,11 @@ import {
   selectMonthFilter,
   selectYearFilter,
 } from "../../store/slices/filterSlice";
-import { selectAllExpenses } from "../../store/slices/expenseSlice";
-import { selectAllIncomes } from "../../store/slices/incomeSlice";
-import { exportToCSV } from "../../utils/exportCsv";
-import { FiMoon, FiSun, FiDownload, FiMenu, FiLogOut } from "react-icons/fi";
+import {
+  FiMoon, FiSun, FiMenu, FiLogOut,
+  FiGrid, FiFileText, FiTrendingUp, FiLayers,
+  FiCreditCard, FiRepeat, FiPieChart, FiUser,
+} from "react-icons/fi";
 import { logout } from "../../store/slices/authSlice";
 
 const currencies = [
@@ -47,8 +49,6 @@ const Header = ({ setIsMobileOpen }) => {
   const currencyCode = useSelector(selectCurrencyCode);
   const monthFilter = useSelector(selectMonthFilter);
   const yearFilter = useSelector(selectYearFilter);
-  const expensesList = useSelector(selectAllExpenses);
-  const incomesList = useSelector(selectAllIncomes);
   const { userInfo } = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -61,6 +61,19 @@ const Header = ({ setIsMobileOpen }) => {
 
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 10 }, (_, i) => currentYear - 5 + i);
+
+  const location = useLocation();
+  const pageMap = {
+    "/": { label: "Dashboard", icon: <FiGrid /> },
+    "/expenses": { label: "All Expenses", icon: <FiFileText /> },
+    "/incomes": { label: "Income", icon: <FiTrendingUp /> },
+    "/budgets": { label: "Budget Management", icon: <FiCreditCard /> },
+    "/categories": { label: "Manage Categories", icon: <FiLayers /> },
+    "/recurring": { label: "Recurring Transactions", icon: <FiRepeat /> },
+    "/reports": { label: "Financial Reports", icon: <FiPieChart /> },
+    "/profile": { label: "User Profile", icon: <FiUser /> },
+  };
+  const currentPage = pageMap[location.pathname] || { label: "Wallet", icon: <FiGrid /> };
 
   return (
     <header
@@ -76,14 +89,43 @@ const Header = ({ setIsMobileOpen }) => {
         boxShadow: "var(--shadow-sm)",
       }}
     >
-      <div className="d-flex align-items-center">
+      <div className="d-flex align-items-center gap-3">
         <button
-          className="toggle-btn me-3 d-md-none"
+          className="toggle-btn me-1 d-md-none"
           onClick={() => setIsMobileOpen(true)}
         >
           <FiMenu />
         </button>
-        <h4 className="m-0 fw-bold text-gradient d-md-none">Wallet</h4>
+        {/* Mobile */}
+        <div className="d-flex align-items-center gap-2 d-md-none">
+          <span style={{ color: "var(--primary-color)", fontSize: "1.1rem" }}>
+            {currentPage.icon}
+          </span>
+          <h4 className="m-0 fw-bold text-gradient">{currentPage.label}</h4>
+        </div>
+        {/* Desktop */}
+        <div className="d-none d-md-flex align-items-center gap-2">
+          <div
+            style={{
+              width: "34px",
+              height: "34px",
+              borderRadius: "10px",
+              background: "linear-gradient(135deg, var(--primary-color), var(--secondary-color))",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "white",
+              fontSize: "1rem",
+              boxShadow: "0 4px 12px rgba(99,102,241,0.3)",
+              flexShrink: 0,
+            }}
+          >
+            {currentPage.icon}
+          </div>
+          <h5 className="m-0 fw-bold text-gradient" style={{ fontSize: "1.1rem" }}>
+            {currentPage.label}
+          </h5>
+        </div>
       </div>
 
       <div className="d-flex align-items-center gap-2 gap-sm-3 ms-auto flex-wrap justify-content-end">
